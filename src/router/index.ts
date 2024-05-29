@@ -1,6 +1,9 @@
-import LoginPage from '@/views/LoginPage.vue'
+
 import MainPage from '@/views/MainPage.vue'
 import TicketInfoPage from '@/views/TicketInfoPage.vue'
+import TicketsPage from '@/views/TicketsPage.vue'
+import QueuePage from '@/views/QueuePage.vue'
+
 import { createRouter, createWebHistory } from 'vue-router'
 
 
@@ -13,21 +16,30 @@ const router = createRouter({
       component: MainPage
     },
     {
-      path: '/login',
-      name: 'login',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: LoginPage
-    },
-    {
       path: '/info',
       name: 'ticket-info',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: TicketInfoPage
-    }
+    },
+    {
+      path: '/tickets',
+      name: 'tickets',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: TicketsPage
+    },
+    {
+      path: '/queue',
+      name: 'queue',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: QueuePage
+    },
+    
 
   ]
 })

@@ -1,35 +1,48 @@
 <script setup lang="ts">
 import { onMounted, ref, } from "vue";
 
+
+
 import type { Service } from "../models/services.interface"
 import { fetchAvailableServices, } from "../utils/tickets.utils"
-
 import type { TicketInfo } from "@/models/ticketInfo";
 
 
 import { useStore } from "../stores/ticket";
 import { useRouter } from "vue-router";
+import { v4 as uuidv4 } from 'uuid';
+import Cookies from 'js-cookie';
 
 const store = useStore();
 const router = useRouter();
 
+
+// const token = ref(Cookies.get('token') || uuidv4() as string);
 const services = ref([] as Service[]);
 
 
-
-const session_id = 1;
 
 
 const getSessionTickets = async () => {
     services.value = await fetchAvailableServices();
 }
+
+const generateToken = () => {
+    const newToken = Cookies.get('token') || uuidv4();
+    // token.value = newToken;
+    console.log(newToken);
+    Cookies.set('token', newToken, { expires: 7 }); // Expires in 7 days
+};
+
+
 const registerT = async (serviceId: number) => {
     const object: TicketInfo = {
         serviceId: serviceId,
-        branchId: 1
+        branchId: 1,
+        agent: Cookies.get('token')
     }
     store.setInfo(object);
-    router.push({ path: "/info" })
+    router.push("/info")
 
     // const result = await registerTicket(serviceId, 1);
     // console.log(result);
@@ -40,6 +53,7 @@ const registerT = async (serviceId: number) => {
 
 onMounted(() => {
     getSessionTickets();
+    generateToken();
 
 })
 
@@ -64,7 +78,7 @@ main {
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 100vh;
+    height: 100%;
 
     .services {
         display: flex;

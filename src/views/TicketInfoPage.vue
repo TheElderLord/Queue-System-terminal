@@ -16,10 +16,11 @@ const ticket = ref({} as Ticket);
 
 const registerT = async () => {
     const info: TicketInfo = store.getInfo();
-    ticket.value = await registerTicket(info.serviceId, info.branchId);
-    setTimeout(() => {
-        router.push("/")
-    }, 3000)
+
+    ticket.value = await registerTicket(info.serviceId, info.branchId,info.agent);
+    // setTimeout(() => {
+    //     router.push("/")
+    // }, 3000)
 }
 const formatDate = (date: Date) => {
     return new Date(date).toLocaleString("ru-RU")

@@ -13,10 +13,10 @@ export const fetchAvailableServices = async (): Promise<Service[]> => {
         throw error; // Re-throw the error to handle it elsewhere if needed
     }
 }
-export const registerTicket = async (serviceId: number, branchId: number): Promise<Ticket> => {
+export const registerTicket = async (serviceId: number, branchId: number, agent:string): Promise<Ticket> => {
     try {
         const response: AxiosResponse<Ticket> = await axios.post<Ticket>(REGISTER_TICKET_URL
-            , { serviceId, branchId }
+            , { serviceId, branchId,agent }
         );
         return response.data;
     } catch (error) {

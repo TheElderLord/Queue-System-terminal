@@ -3,6 +3,6 @@
 </script>
 <template>
     <div>
-        Login page
+        Queue page
     </div>
 </template>
