@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Ticket } from '@/models/ticket.interface';
-import { fetchQueueTickets } from '@/utils/tickets.utils';
+import type { Ticket } from '../models/ticket.interface';
+import { fetchQueueTickets } from '../utils/tickets.utils';
 import { onMounted, ref } from 'vue';
 
 const tickets = ref([] as Ticket[])
@@ -19,7 +19,11 @@ onMounted(() => {
 </script>
 <template>
     <div class="container">
-        <div class="tickets">
+        <div class="title text-center text-3xl">
+            Очередь
+        </div>
+        <div v-if="tickets.length > 0" class="tickets">
+
             <div v-for="ticket in tickets" :key="ticket.id" class="ticket">
                 <div class="ticketNum">
                     {{ ticket.ticketNumber }}
@@ -35,6 +39,9 @@ onMounted(() => {
                     {{ ticket.windowNum }}
                 </div>
             </div>
+        </div>
+        <div class="text-3xl text-center" v-else>
+            У вас нет билетов
         </div>
     </div>
 </template>

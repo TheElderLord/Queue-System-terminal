@@ -4,7 +4,7 @@ import { onMounted, ref } from 'vue';
 
 
 import type { Ticket } from "../models/ticket.interface"
-import { fetchUserTickets, deleteResponse } from '@/utils/tickets.utils';
+import { fetchUserTickets, deleteResponse } from '../utils/tickets.utils';
 
 const tickets = ref([] as Ticket[]);
 const isCreateActive = ref(false);

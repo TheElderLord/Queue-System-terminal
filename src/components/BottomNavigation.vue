@@ -6,7 +6,7 @@ const router = useRouter();
 const value = ref(0)
 
 
-const goTo = (value) => {
+const goTo = (value:string) => {
 
     return router.push(value);
 
@@ -34,19 +34,19 @@ const color = computed(() => {
     <main>
         <v-layout class="overflow-visible" style="height: 100%;">
             <v-bottom-navigation style="height: 80px;" v-model="value" :bg-color="color" mode="shift">
-                <v-btn>
+                <v-btn @click="goTo('/')">
                     <v-icon>mdi-menu</v-icon>
 
                     <span>Меню</span>
                 </v-btn>
 
-                <v-btn>
+                <v-btn @click="goTo('/tickets')">
                     <v-icon>mdi-ticket</v-icon>
 
                     <span>Билеты</span>
                 </v-btn>
 
-                <v-btn>
+                <v-btn  @click="goTo('/queue')">
                     <v-icon>mdi-human-queue</v-icon>
 
                     <span>Очередь</span>

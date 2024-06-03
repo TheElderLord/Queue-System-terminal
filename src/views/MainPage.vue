@@ -5,7 +5,7 @@ import { onMounted, ref, } from "vue";
 
 import type { Service } from "../models/services.interface"
 import { fetchAvailableServices, } from "../utils/tickets.utils"
-import type { TicketInfo } from "@/models/ticketInfo";
+import type { TicketInfo } from "../models/ticketInfo";
 
 
 import { useStore } from "../stores/ticket";
@@ -25,6 +25,7 @@ const services = ref([] as Service[]);
 
 const getSessionTickets = async () => {
     services.value = await fetchAvailableServices();
+    console.log(services.value)
 }
 
 const generateToken = () => {
@@ -62,10 +63,13 @@ onMounted(() => {
 <template>
     <main>
         <div class="container">
-            <div class="services">
+            <div v-if="services.length>0" class="services">
                 <div @click="registerT(service.id)" v-for="service in services" :key="service.id" class="service">
                     {{ service.name }}
                 </div>
+            </div>
+            <div v-else class="text-3xl text-center" >
+                Нет доступных услуг
             </div>
         </div>
     </main>
