@@ -61,14 +61,13 @@ onMounted(() => {
 </script>
 <template>
     <main>
-        <div class="services">
-            <div @click="registerT(service.id)" v-for="service in services" :key="service.id" class="service">
-                {{ service.name }}
+        <div class="container">
+            <div class="services">
+                <div @click="registerT(service.id)" v-for="service in services" :key="service.id" class="service">
+                    {{ service.name }}
+                </div>
             </div>
         </div>
-
-
-
     </main>
 
 </template>
@@ -84,6 +83,8 @@ main {
         display: flex;
         flex-direction: column;
         flex-wrap: wrap;
+        width: 100%;
+        height: 100%;
 
         .service {
             margin: 0.5rem auto;

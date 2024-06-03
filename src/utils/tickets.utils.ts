@@ -2,7 +2,7 @@ import axios, { type AxiosResponse } from "axios";
 import Cookies from "js-cookie";
 
 
-import { TICKETS_URL, REGISTER_TICKET_URL, USER_TICKETS_URL, QUEUE_URL } from "./base.utils";
+import { TICKETS_URL, REGISTER_TICKET_URL, USER_TICKETS_URL, QUEUE_URL, BASE_URL } from "./base.utils";
 import type { Ticket } from "@/models/ticket.interface";
 import type { Service } from "@/models/services.interface"
 
@@ -46,6 +46,15 @@ export const fetchQueueTickets = async (): Promise<Ticket[]> => {
             agent: null
         }
         const response: AxiosResponse<Ticket[]> = await axios.post<Ticket[]>(QUEUE_URL, object);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching tickets:", error);
+        throw error; // Re-throw the error to handle it elsewhere if needed
+    }
+}
+export const deleteResponse = async (id: number): Promise<Ticket[]> => {
+    try {
+        const response: AxiosResponse<Ticket[]> = await axios.delete<Ticket[]>(`${BASE_URL}/tickets/${id}`);
         return response.data;
     } catch (error) {
         console.error("Error fetching tickets:", error);

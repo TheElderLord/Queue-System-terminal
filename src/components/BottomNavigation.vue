@@ -15,16 +15,17 @@ const goTo = (value) => {
 const color = computed(() => {
     switch (value.value) {
         case 0: {
-            goTo("/");
+            // goTo("/");
             return 'blue-grey'
         };
-        case 1:{ 
-            goTo("/tickets")
-            return 'teal'};
-        case 2:{
-            goTo("/queue")
+        case 1: {
+            // goTo("/tickets")
+            return 'teal'
+        };
+        case 2: {
+            // goTo("/queue")
             return 'brown';
-        } 
+        }
         default: return 'blue-grey';
     }
 });

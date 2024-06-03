@@ -4,9 +4,11 @@ import { fetchQueueTickets } from '@/utils/tickets.utils';
 import { onMounted, ref } from 'vue';
 
 const tickets = ref([] as Ticket[])
+const newTickets = ref([] as Ticket[])
 
 const getQueueTickets = async () => {
     tickets.value = await fetchQueueTickets();
+    // tickets.value.push(newTickets.value[newTickets.value.length - 1]);
 }
 onMounted(() => {
     getQueueTickets();
