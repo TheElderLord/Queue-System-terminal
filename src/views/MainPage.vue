@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, } from "vue";
+import { onMounted, ref } from "vue";
 
 
 
@@ -16,6 +16,7 @@ import Cookies from 'js-cookie';
 const store = useStore();
 const router = useRouter();
 
+const taps = ref(0)
 
 // const token = ref(Cookies.get('token') || uuidv4() as string);
 const services = ref([] as Service[]);
@@ -40,7 +41,7 @@ const registerT = async (serviceId: number) => {
     const object: TicketInfo = {
         serviceId: serviceId,
         branchId: 1,
-        agent: Cookies.get('token')
+        agent: Cookies.get('token')??""
     }
     store.setInfo(object);
     router.push("/info")
@@ -50,18 +51,27 @@ const registerT = async (serviceId: number) => {
 
 }
 
+const handleTaps = ()=>{
+    taps.value++;
+    if (taps.value === 5) {
+        router.push("/admin"); // Redirect to another page after 3 taps
+    }
+}
+
 
 
 onMounted(() => {
     getSessionTickets();
     generateToken();
+   
 
 })
 
 
+
 </script>
 <template>
-    <main>
+    <main @click="handleTaps()">
         <div class="container">
             <div v-if="services.length>0" class="services">
                 <div @click="registerT(service.id)" v-for="service in services" :key="service.id" class="service">

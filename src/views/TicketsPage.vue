@@ -32,7 +32,11 @@ const deleteTicket = async (id: number) => {
 }
 const show = (id: number) => {
     isCreateActive.value = true;
-    const ticket: Ticket = tickets.value.find(e => e.id == id);
+    const found = tickets.value.find(e => e.id == id);
+    if(!found){
+        return
+    }
+    const ticket: Ticket = found
     TicketObject.value = ticket;
 }
 
@@ -48,7 +52,7 @@ onMounted(() => {
                 <h1>Ваши билеты</h1>
             </div>
             <div class="tickets w-full">
-                <div @click="show(ticket.id)" class="ticket  my-2 flex " v-for="ticket in tickets" :key="ticket.id">
+                <div  class="ticket  my-2 flex " v-for="ticket in tickets" :key="ticket.id">
                     <div class="ticketNum">
                         <h1>{{ ticket.ticketNumber }}</h1>
                     </div>
@@ -57,6 +61,9 @@ onMounted(() => {
                     </div>
                     <div class="date">
                         {{ formatDate(ticket.registrationTime) }}
+                    </div>
+                    <div @click="show(ticket.id)" class="change">
+                        <v-btn>Подробнее</v-btn>
                     </div>
                 </div>
             </div>
@@ -78,7 +85,7 @@ onMounted(() => {
                                         <li class="list-group-item">{{ TicketObject.serviceName }}</li>
                                         <li class="list-group-item">{{ TicketObject.branchName }}</li>
                                         <li class="list-group-item">{{ TicketObject.windowNum }}</li>
-                                        <li class="list-group-item">{{ TicketObject.status }}</li>
+                                        <li class="list-group-item">{{ TicketObject.status === "NEW"?"Ждет обслуживания":"Обслужен" }} </li>
                                     </ul>
                                 </div>
 

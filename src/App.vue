@@ -1,8 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView,useRoute } from 'vue-router'
 import BottomNavigation from './components/BottomNavigation.vue'
 
+
+const route = useRoute();
+
+const isAdminPage = ()=>{
+    if(route.path === "/admin"){
+      return true;
+    }
+    return false;
+}
 
 </script>
 
@@ -11,7 +20,7 @@ import BottomNavigation from './components/BottomNavigation.vue'
   <div class="main-container">
     <RouterView />
   </div>
- <div class="footer">
+ <div v-if="!isAdminPage()" class="footer">
   <BottomNavigation/>
  </div>
 </main>

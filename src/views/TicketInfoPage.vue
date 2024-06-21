@@ -6,6 +6,7 @@ import type { TicketInfo } from '../models/ticketInfo';
 import type { Ticket } from '../models/ticket.interface'
 import { registerTicket } from '../utils/tickets.utils'
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 
 
 const store = useStore()
@@ -13,14 +14,32 @@ const router = useRouter()
 
 const ticket = ref({} as Ticket);
 
+const incompleteTicketError = ref(false);
+const incompleteTicketErrorMessage = ref("");
+
 
 const registerT = async () => {
     const info: TicketInfo = store.getInfo();
-
-    ticket.value = await registerTicket(info.serviceId, info.branchId,info.agent);
+    try {
+        ticket.value = await registerTicket(info.serviceId, info.branchId, info.agent);
+       
+    } catch (error) {
+        incompleteTicketError.value = true;
+        if (axios.isAxiosError(error)) {
+            if (error.response && error.response.status === 403) {
+                incompleteTicketErrorMessage.value = "У вас есть еще не обслуженный билет";
+            } else if (error.response) {
+                incompleteTicketErrorMessage.value = `Error: ${error.response.status} - ${error.response.statusText}`;
+            } else {
+                incompleteTicketErrorMessage.value = "Error fetching tickets: " + error.message;
+            }
+        } else {
+            incompleteTicketErrorMessage.value = "Unexpected error: " + error;
+        }
+    }
     setTimeout(() => {
-        router.push("/")
-    }, 3000)
+            router.push("/")
+        }, 3000);
 }
 const formatDate = (date: Date) => {
     return new Date(date).toLocaleString("ru-RU")
@@ -32,7 +51,7 @@ onMounted(() => {
 </script>
 <template>
     <main>
-        <div v-if="ticket" class="ticket-container">
+        <div v-if="!incompleteTicketError" class="ticket-container">
             <div class="ticketNumber text-4xl">
                 <h1>{{ ticket.ticketNumber }}</h1>
             </div>
@@ -45,6 +64,9 @@ onMounted(() => {
             <div class="serviceName text-3xl">
                 <h1>{{ ticket.windowNum }}</h1>
             </div>
+        </div>
+        <div v-if="incompleteTicketError" class="error-message text-center text-5xl">
+            <h2>{{ incompleteTicketErrorMessage }}</h2>
         </div>
     </main>
 </template>

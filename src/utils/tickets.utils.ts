@@ -6,9 +6,11 @@ import { TICKETS_URL, REGISTER_TICKET_URL, USER_TICKETS_URL, QUEUE_URL, BASE_URL
 import type { Ticket } from "@/models/ticket.interface";
 import type { Service } from "@/models/services.interface"
 
+const branch = localStorage.getItem("branch");
+
 export const fetchAvailableServices = async (): Promise<Service[]> => {
     try {
-        const response: AxiosResponse<Service[]> = await axios.get<Service[]>(TICKETS_URL);
+        const response: AxiosResponse<Service[]> = await axios.get<Service[]>(`${TICKETS_URL}/${branch}`);
         return response.data;
     } catch (error) {
         console.error("Error fetching tickets:", error);
