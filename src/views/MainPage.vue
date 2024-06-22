@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 
 
 
@@ -9,20 +9,25 @@ import type { TicketInfo } from "../models/ticketInfo";
 
 
 import { useStore } from "../stores/ticket";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { v4 as uuidv4 } from 'uuid';
 import Cookies from 'js-cookie';
 
 const store = useStore();
 const router = useRouter();
+const route = useRoute();
+
 
 const taps = ref(0)
-
+const isMobile = ref(false);
 // const token = ref(Cookies.get('token') || uuidv4() as string);
 const services = ref([] as Service[]);
 
 
 
+const pageReload = () => {
+    location.reload();
+}
 
 const getSessionTickets = async () => {
     services.value = await fetchAvailableServices();
@@ -41,7 +46,8 @@ const registerT = async (serviceId: number) => {
     const object: TicketInfo = {
         serviceId: serviceId,
         branchId: 1,
-        agent: Cookies.get('token')??""
+        agent: Cookies.get('token') ?? "",
+        terminalType: isMobile.value === true ? "MOBILE" : "TERMINAL"
     }
     store.setInfo(object);
     router.push("/info")
@@ -51,21 +57,63 @@ const registerT = async (serviceId: number) => {
 
 }
 
-const handleTaps = ()=>{
+const handleTaps = () => {
+    if (isMobile.value) {
+        return
+    }
     taps.value++;
     if (taps.value === 5) {
         router.push("/admin"); // Redirect to another page after 3 taps
     }
 }
+const getUrlQuery = () => {
+    if (isMobile.value === true) {
+        const query = localStorage.getItem("branch") === "" ? route.query.branch : localStorage.getItem("branch");
+        console.log(query);
+        localStorage.setItem("branch", query + "")
 
+    }
+}
+
+watch(
+    () => store.getMobile(),
+    (newValue) => {
+        // console.log(typeof newValue)
+        isMobile.value = newValue;
+        console.log("Mobile status changed:", newValue);
+        // if (newValue === true) {
+        //     getUrlQuery();
+        // }
+    }
+);
+watch(
+    () => route.query.branch,
+    (newValue) => {
+        localStorage.setItem("branch", route.query.branch + "")
+        pageReload()
+        getSessionTickets();
+
+    }
+);
 
 
 onMounted(() => {
+    // location.reload()
     getSessionTickets();
     generateToken();
-   
+
+    isMobile.value = store.getMobile()
+
+    getUrlQuery();
+
+
+
 
 })
+
+
+
+
 
 
 
@@ -73,13 +121,14 @@ onMounted(() => {
 <template>
     <main @click="handleTaps()">
         <div class="container">
-            <div v-if="services.length>0" class="services">
+            <div v-if="services.length > 0" class="services">
                 <div @click="registerT(service.id)" v-for="service in services" :key="service.id" class="service">
                     {{ service.name }}
                 </div>
             </div>
-            <div v-else class="text-3xl text-center" >
-                Нет доступных услуг
+            <div v-else class="text-3xl text-center">
+                <div class="emptyText">Нет доступных услуг</div>
+                <v-btn class="m-4 text-center" @click="pageReload()">Обновить</v-btn>
             </div>
         </div>
     </main>

@@ -18,6 +18,7 @@ export const useTicketStore = defineStore('ticket', () => {
 })
 export const useStore = defineStore('store', () => {
     const info = ref({} as TicketInfo);
+    const isMobile = ref(false)
 
     const setInfo = (value: TicketInfo) => {
         info.value = value;
@@ -25,7 +26,13 @@ export const useStore = defineStore('store', () => {
     const getInfo = () => {
         return info.value;
     }
+    const setMobile = (value: boolean): void => {
+        isMobile.value = value;
+    }
+    const getMobile = (): boolean => {
+        return isMobile.value;
+    }
 
-    return { info, setInfo, getInfo }
+    return { info, setInfo, getInfo, setMobile, getMobile }
 })
 

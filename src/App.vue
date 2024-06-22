@@ -1,42 +1,60 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { RouterLink, RouterView,useRoute } from 'vue-router'
+import { onMounted, onUnmounted, ref } from 'vue'
+import { RouterLink, RouterView, useRoute } from 'vue-router'
 import BottomNavigation from './components/BottomNavigation.vue'
 
+import { useStore } from "./stores/ticket";
+const store = useStore();
 
 const route = useRoute();
+const isMobile = ref(false);
 
-const isAdminPage = ()=>{
-    if(route.path === "/admin"){
-      return true;
-    }
-    return false;
+const isAdminPage = () => {
+  if (route.path === "/admin") {
+    return true;
+  }
+  return false;
 }
 
+const checkIfMobile = () => {
+  isMobile.value = window.innerWidth <= 768;
+  store.setMobile(isMobile.value);
+};
+
+onMounted(() => {
+  checkIfMobile();
+  // Add event listener for window resize
+  window.addEventListener('resize', checkIfMobile);
+})
+
+onUnmounted(() => {
+  // Remove the event listener when the component is unmounted
+  window.removeEventListener('resize', checkIfMobile);
+});
 </script>
 
 <template>
   <main>
-  <div class="main-container">
-    <RouterView />
-  </div>
- <div v-if="!isAdminPage()" class="footer">
-  <BottomNavigation/>
- </div>
-</main>
- 
+    <div class="main-container">
+      <RouterView />
+    </div>
+    <div v-if="!isAdminPage() && isMobile" class="footer">
+      <BottomNavigation />
+    </div>
+  </main>
+
 </template>
 
 <style lang="scss" scoped>
-main{
-  .main-container{
+main {
+  .main-container {
     width: 100%;
     height: 90vh;
   }
-  .footer{
+
+  .footer {
     width: 100%;
-  
+
   }
 }
-
 </style>

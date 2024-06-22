@@ -21,8 +21,8 @@ const incompleteTicketErrorMessage = ref("");
 const registerT = async () => {
     const info: TicketInfo = store.getInfo();
     try {
-        ticket.value = await registerTicket(info.serviceId, info.branchId, info.agent);
-       
+        ticket.value = await registerTicket(info);
+
     } catch (error) {
         incompleteTicketError.value = true;
         if (axios.isAxiosError(error)) {
@@ -38,8 +38,8 @@ const registerT = async () => {
         }
     }
     setTimeout(() => {
-            router.push("/")
-        }, 3000);
+        router.push("/")
+    }, 3000);
 }
 const formatDate = (date: Date) => {
     return new Date(date).toLocaleString("ru-RU")
@@ -80,7 +80,8 @@ main {
 
     .ticket-container {
         text-align: center;
-        div{
+
+        div {
             margin: 1rem;
         }
     }

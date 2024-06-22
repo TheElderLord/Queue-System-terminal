@@ -1,5 +1,6 @@
 export interface TicketInfo {
     branchId: number,
     serviceId: number,
-    agent: string
+    agent: string,
+    terminalType: string
 }

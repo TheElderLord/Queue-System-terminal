@@ -16,16 +16,17 @@ const getBranches = async () => {
     branches.value = await fetchBranches();
     // console.log(branches.value)
 }
-const handleSelectBranches = ()=>{
-    localStorage.setItem("branch",selectedBranch.value+"")
+const handleSelectBranches = () => {
+    localStorage.setItem("branch", selectedBranch.value + "")
 }
-const goMain = ()=>{
+const goMain = () => {
     router.push("/");
+
 }
 
 
 onMounted(() => {
-  
+
     getBranches()
 })
 
@@ -33,22 +34,23 @@ onMounted(() => {
 </script>
 <template>
     <main>
-        
-        <div class="admin-container">
-           
-           <div class="title text-center">Админ панель</div>
-           <div class="branches text-center">
-            <h1>Выберите отделение</h1>
-            <select v-model="selectedBranch" class="form-select" aria-label="Default select example" @change="handleSelectBranches()">
-                <option selected value="null">Open this select menu</option>
-                <option v-for="branch in branches" :key="branch.id" :value="branch.id">
-                    {{ branch.name }}
-                </option>
-               
-            </select>
 
-            <v-btn @click="goMain()">В главную</v-btn>
-           </div>
+        <div class="admin-container">
+
+            <div class="title text-center">Админ панель</div>
+            <div class="branches text-center">
+                <h1>Выберите отделение</h1>
+                <select v-model="selectedBranch" class="form-select" aria-label="Default select example"
+                    @change="handleSelectBranches()">
+                    <option selected value="null">Open this select menu</option>
+                    <option v-for="branch in branches" :key="branch.id" :value="branch.id">
+                        {{ branch.name }}
+                    </option>
+
+                </select>
+
+                <v-btn @click="goMain()">В главную</v-btn>
+            </div>
         </div>
     </main>
 
@@ -61,7 +63,7 @@ main {
     width: 100%;
     height: 100%;
 
-    
+
 
 
 }
