@@ -50,7 +50,8 @@ export const fetchQueueTickets = async (): Promise<Ticket[]> => {
         //     agent: null
         // }
         const branch = localStorage.getItem("branch");
-        const response: AxiosResponse<Ticket[]> = await axios.post<Ticket[]>(`${QUEUE_URL}?branchId=${branch}`);
+        const response: AxiosResponse<Ticket[]> = await axios.get<Ticket[]>(`${QUEUE_URL}?branchId=${branch}`);
+        console.log(response.data)
         return response.data;
     } catch (error) {
         console.error("Error fetching tickets:", error);

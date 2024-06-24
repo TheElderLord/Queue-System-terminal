@@ -120,7 +120,8 @@ onMounted(() => {
 </script>
 <template>
     <main @click="handleTaps()">
-        <div class="container">
+        <div class="ticket-container w-full h-full">
+            <div class="title text-4xl text-center m-4">Выберите услугу</div>
             <div v-if="services.length > 0" class="services">
                 <div @click="registerT(service.id)" v-for="service in services" :key="service.id" class="service">
                     {{ service.name }}
@@ -142,12 +143,15 @@ main {
     width: 100%;
     height: 100%;
 
+
+
     .services {
         display: flex;
         flex-direction: column;
         flex-wrap: wrap;
         width: 100%;
-        height: 100%;
+        height: 90%;
+        margin-top: 10%;
 
         .service {
             margin: 0.5rem auto;
