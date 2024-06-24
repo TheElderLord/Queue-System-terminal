@@ -23,6 +23,10 @@ const isMobile = ref(false);
 // const token = ref(Cookies.get('token') || uuidv4() as string);
 const services = ref([] as Service[]);
 
+const adminRedirect = ref(false);
+const username = ref("");
+const password = ref("");
+
 
 
 const pageReload = () => {
@@ -68,8 +72,13 @@ const handleTaps = () => {
     }
     taps.value++;
     if (taps.value === 5) {
-        router.push("/admin"); // Redirect to another page after 3 taps
+        adminRedirect.value = true;
+         // Redirect to another page after 3 taps
     }
+}
+const goToAdmin = ()=>{
+    if(username.value === "admin" && password.value === "admin")
+    router.push("/admin");
 }
 const getUrlQuery = () => {
     if (isMobile.value === true) {
@@ -136,6 +145,44 @@ onMounted(() => {
                 <div class="emptyText">Нет доступных услуг</div>
                 <v-btn class="m-4 text-center" @click="pageReload()">Обновить</v-btn>
             </div>
+        </div>
+        <div class="modal">
+            <v-dialog v-model="adminRedirect" max-width="800">
+                <template v-slot:activator="{ props: activatorProps }">
+                    <v-btn v-bind="activatorProps" color="surface-variant" text="Создать" variant="flat"></v-btn>
+                </template>
+
+                <template v-slot:default>
+                    <v-card title="Авторизация">
+                        <v-card-text>
+                            <div class="card text-center">
+                                <div class="form text-center">
+                                    <form @submit.prevent="goToAdmin()">
+                                        <div class="mb-3">
+                                            <label for="exampleInputEmail1" class="form-label">Имя пользователя</label>
+                                            <input v-model="username" type="text" class="form-control"
+                                                id="exampleInputEmail1" aria-describedby="emailHelp">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="exampleInputPassword1" class="form-label">Пароль</label>
+                                            <input v-model="password" type="password" class="form-control"
+                                                id="exampleInputPassword1">
+                                        </div>
+                    
+                                </form>
+                                </div>
+                            </div>
+
+                        </v-card-text>
+
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn @click="goToAdmin()" text="Подтвердить"></v-btn>
+                            <v-btn text="Закрыть" @click="adminRedirect = !adminRedirect"></v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </template>
+            </v-dialog>
         </div>
     </main>
 
