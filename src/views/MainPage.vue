@@ -43,10 +43,15 @@ const generateToken = () => {
 
 
 const registerT = async (serviceId: number) => {
+    const service = services.value.find(e=>e.id === serviceId);
+    if(service.maxServTime === 0){
+        services.value = await fetchAvailableServices(serviceId);
+        return
+    }
     const object: TicketInfo = {
         serviceId: serviceId,
-        branchId: 1,
-        agent: Cookies.get('token') ?? "",
+        branchId: parseInt(localStorage.getItem("branch")) ,
+        agent: isMobile.value === true? Cookies.get('token') : "",
         terminalType: isMobile.value === true ? "MOBILE" : "TERMINAL"
     }
     store.setInfo(object);

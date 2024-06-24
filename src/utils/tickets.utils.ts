@@ -9,9 +9,10 @@ import type { TicketInfo } from "@/models/ticketInfo";
 
 const branch = localStorage.getItem("branch");
 
-export const fetchAvailableServices = async (): Promise<Service[]> => {
+export const fetchAvailableServices = async (serviceId:number): Promise<Service[]> => {
     try {
-        const response: AxiosResponse<Service[]> = await axios.get<Service[]>(`${TICKETS_URL}/${branch}`);
+        const url = serviceId ? `${TICKETS_URL}/${branch}?serviceId=${serviceId}` : `${TICKETS_URL}/${branch}`
+        const response: AxiosResponse<Service[]> = await axios.get<Service[]>(url);
         return response.data;
     } catch (error) {
         console.error("Error fetching tickets:", error);

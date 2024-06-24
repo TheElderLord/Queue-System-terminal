@@ -5,4 +5,6 @@ export interface Service {
     parentName: string;
     priority: number;
     parentId: number;
+    maxServTime:number,
+    maxWaitTIme:number
 }
