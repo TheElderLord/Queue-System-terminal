@@ -77,8 +77,8 @@ onMounted(() => {
                             "Подойдите к окну: " +
                             ticket.windowNum }}
                     </div>
-                    <div @click="show(ticket.id)" class="change">
-                        <v-btn>Подробнее</v-btn>
+                    <div class="change">
+                        <button @click="show(ticket.id)" class="btn btn-primary">Подробнее</button>
                     </div>
                 </div>
 
