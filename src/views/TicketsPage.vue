@@ -68,9 +68,9 @@ onMounted(() => {
                     <div class="service">
                         {{ ticket.serviceName }}
                     </div>
-                    <div class="date">
+                    <!-- <div class="date">
                         {{ formatDate(ticket.registrationTime) }}
-                    </div>
+                    </div> -->
                     <div class="status">
                         {{ ticket.status === "NEW" ? "Вас скоро вызовут" : ticket.status === "COMPLETED" ? `Билет
                         обслужен`:
