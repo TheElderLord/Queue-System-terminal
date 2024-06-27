@@ -47,15 +47,15 @@ const generateToken = () => {
 
 
 const registerT = async (serviceId: number) => {
-    const service = services.value.find(e=>e.id === serviceId);
-    if(service.maxServTime === 0){
+    const service = services.value.find(e => e.id === serviceId);
+    if (service.maxServTime === 0) {
         services.value = await fetchAvailableServices(serviceId);
         return
     }
     const object: TicketInfo = {
         serviceId: serviceId,
-        branchId: parseInt(localStorage.getItem("branch")) ,
-        agent: isMobile.value === true? Cookies.get('token') : "",
+        branchId: parseInt(localStorage.getItem("branch")),
+        agent: isMobile.value === true ? Cookies.get('token') : "",
         terminalType: isMobile.value === true ? "MOBILE" : "TERMINAL"
     }
     store.setInfo(object);
@@ -73,16 +73,16 @@ const handleTaps = () => {
     taps.value++;
     if (taps.value === 5) {
         adminRedirect.value = true;
-         // Redirect to another page after 3 taps
+        // Redirect to another page after 3 taps
     }
 }
-const goToAdmin = ()=>{
-    if(username.value === "admin" && password.value === "admin")
-    router.push("/admin");
+const goToAdmin = () => {
+    if (username.value === "admin" && password.value === "admin")
+        router.push("/admin");
 }
 const getUrlQuery = () => {
     if (isMobile.value === true) {
-        const query = localStorage.getItem("branch") === "" ? route.query.branch : localStorage.getItem("branch");
+        const query = route.query.branch;
         console.log(query);
         localStorage.setItem("branch", query + "")
 
@@ -168,8 +168,8 @@ onMounted(() => {
                                             <input v-model="password" type="password" class="form-control"
                                                 id="exampleInputPassword1">
                                         </div>
-                    
-                                </form>
+
+                                    </form>
                                 </div>
                             </div>
 
