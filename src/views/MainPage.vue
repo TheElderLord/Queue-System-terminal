@@ -82,9 +82,11 @@ const goToAdmin = () => {
 }
 const getUrlQuery = () => {
     if (isMobile.value === true) {
-        const query = route.query.branch;
-        console.log(query);
-        localStorage.setItem("branch", query + "")
+        if (route.query.branch !== undefined) {
+            const query = route.query.branch;
+            console.log(query);
+            localStorage.setItem("branch", query + "")
+        }
 
     }
 }
@@ -103,9 +105,12 @@ watch(
 watch(
     () => route.query.branch,
     (newValue) => {
-        localStorage.setItem("branch", route.query.branch + "")
-        pageReload()
-        getSessionTickets();
+        if (route.query.branch !== undefined) {
+            localStorage.setItem("branch", route.query.branch + "")
+            pageReload()
+            getSessionTickets();
+        }
+
 
     }
 );
@@ -145,6 +150,8 @@ onMounted(() => {
                 <div class="emptyText">Нет доступных услуг</div>
                 <v-btn class="m-4 text-center" @click="pageReload()">Обновить</v-btn>
             </div>
+
+
         </div>
         <div class="modal">
             <v-dialog v-model="adminRedirect" max-width="800">

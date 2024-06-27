@@ -4,6 +4,7 @@ import TicketInfoPage from '@/views/TicketInfoPage.vue'
 import TicketsPage from '@/views/TicketsPage.vue'
 import QueuePage from '@/views/QueuePage.vue'
 import AdminPage from '@/views/AdminPage.vue'
+import TestView from "@/views/TestView.vue"
 
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -47,6 +48,14 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: AdminPage
+    },
+    {
+      path: '/test',
+      name: 'test',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: TestView
     },
     
 

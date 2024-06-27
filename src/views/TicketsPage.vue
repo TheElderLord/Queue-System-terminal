@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 
 import type { Ticket } from "../models/ticket.interface"
@@ -11,8 +11,19 @@ const isCreateActive = ref(false);
 const TicketObject = ref({} as Ticket)
 const rating = ref(0);
 
+const audioSource = '/audio2.mp3';
+
+// Reference to the audio element
+const audio = ref(null);
+
 const getRegisteredTickets = async () => {
+    console.log("registered tickets")
     tickets.value = await fetchUserTickets();
+    tickets.value.map(e=>{
+        if(e.status === "INSERVICE"){
+            playAudio()
+        }
+    })
 
 
 }
@@ -49,18 +60,52 @@ const starClick = (value: number) => {
     console.log(value)
 }
 
+const playAudio = () => {
+  if (audio.value && audio.value.readyState >= 3) { // Check if audio is ready to play
+    audio.value.play();
+  } else {
+    console.warn('Audio is not ready to play');
+  }
+};
+
+const pauseAudio = () => {
+  if (audio.value) {
+    audio.value.pause();
+  }
+};
+// watch(tickets.value,()=>{
+//     tickets.value.map(e=>{
+//         console.log(tickets.value)
+//         if(e.status === "INSERVICE"){
+//             playAudio();
+//         }
+//     })
+// })
+
 
 onMounted(() => {
     getRegisteredTickets();
+    setTimeout(() => {
+        getRegisteredTickets();
+    }, 3000);
+    if (audio.value) {
+    audio.value.load();
+    
+
+  }
 })
 </script>
 <template>
     <main>
+        
         <div class="tickets-container">
             <div class="title text-center p-4 text-3xl">
                 <h1>Ваши билеты</h1>
             </div>
             <div class="tickets ">
+                <audio ref="audio" :src="audioSource" @canplay="onCanPlay" @ended="onAudioEnded"></audio>
+                <button @click="playAudio">Play</button>
+                <button @click="pauseAudio">Pause</button>
                 <div class="ticket  my-2 flex " v-for="ticket in tickets" :key="ticket.id">
                     <div class="ticketNum">
                         <h1>{{ ticket.ticketNumber }}</h1>
