@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch } from "vue";
 
-
-
 import type { Service } from "../models/services.interface"
 import { fetchAvailableServices, } from "../utils/tickets.utils"
 import type { TicketInfo } from "../models/ticketInfo";
 
 
-import { useStore } from "../stores/ticket";
+import { useStore,useLangStore } from "../stores/ticket";
 import { useRoute, useRouter } from "vue-router";
 import { v4 as uuidv4 } from 'uuid';
 import Cookies from 'js-cookie';
 
+
 const store = useStore();
+const langStore = useLangStore();
 const router = useRouter();
 const route = useRoute();
 
@@ -28,6 +28,9 @@ const username = ref("");
 const password = ref("");
 
 
+const getLang = ()=>{
+    return langStore.getLang();
+}
 
 const pageReload = () => {
     location.reload();
@@ -56,7 +59,8 @@ const registerT = async (serviceId: number) => {
         serviceId: serviceId,
         branchId: parseInt(localStorage.getItem("branch")),
         agent: isMobile.value === true ? Cookies.get('token') : "",
-        terminalType: isMobile.value === true ? "MOBILE" : "TERMINAL"
+        terminalType: isMobile.value === true ? "MOBILE" : "TERMINAL",
+        language:getLang()
     }
     store.setInfo(object);
     router.push("/info")
@@ -105,7 +109,7 @@ watch(
 watch(
     () => route.query.branch,
     (newValue) => {
-        if (route.query.branch !== undefined) {
+        if (newValue !== undefined) {
             localStorage.setItem("branch", route.query.branch + "")
             pageReload()
             getSessionTickets();
@@ -140,15 +144,20 @@ onMounted(() => {
 <template>
     <main @click="handleTaps()">
         <div class="ticket-container w-full h-full">
-            <div class="title text-4xl text-center m-4">Выберите услугу</div>
+            <div class="title text-4xl text-center m-4">
+                {{getLang() ==="RUS"? "Выберите услугу":getLang() ==="KAZ"? "Қызметті таңдаңыз":"Select a service"}}
+            </div>
             <div v-if="services.length > 0" class="services">
                 <div @click="registerT(service.id)" v-for="service in services" :key="service.id" class="service">
                     {{ service.name }}
                 </div>
             </div>
+           
             <div v-else class="text-3xl text-center">
-                <div class="emptyText">Нет доступных услуг</div>
-                <v-btn class="m-4 text-center" @click="pageReload()">Обновить</v-btn>
+                <div class="emptyText">{{getLang() ==="RUS"? "Нет доступных услуг":getLang() ==="KAZ"? "Қолжетімді қызметтер жоқ":"No available services"}}</div>
+                <v-btn class="m-4 text-center" @click="pageReload()">
+                    {{getLang() ==="RUS"? "Обновить":getLang() ==="KAZ"? "Жаңарту":"Reload"}}
+                </v-btn>
             </div>
 
 

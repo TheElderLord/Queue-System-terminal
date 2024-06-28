@@ -2,6 +2,7 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 import { RouterLink, RouterView, useRoute } from 'vue-router'
 import BottomNavigation from './components/BottomNavigation.vue'
+import HeaderComponent from './components/HeaderComponent.vue'
 
 import { useStore } from "./stores/ticket";
 const store = useStore();
@@ -35,6 +36,9 @@ onUnmounted(() => {
 
 <template>
   <main>
+    <header v-if="!isAdminPage()">
+      <HeaderComponent/>
+    </header>
     <div class="main-container">
       <RouterView />
     </div>
@@ -47,9 +51,10 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 main {
-  .main-container {
+  
+  header{
     width: 100%;
-    height: 90vh;
+    height: 10vh;
   }
 
   .footer {

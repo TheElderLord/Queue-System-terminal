@@ -14,7 +14,19 @@ export const useTicketStore = defineStore('ticket', () => {
         return ticket.value;
     }
 
-    return { ticket, setTicket, getTicket }
+    return {  setTicket, getTicket }
+})
+export const useLangStore = defineStore('lang', () => {
+    const lang = ref("KAZ");
+
+    const setLang = (newTicket: string) => {
+        lang.value = newTicket;
+    }
+    const getLang = () => {
+        return lang.value;
+    }
+
+    return { setLang,  getLang }
 })
 export const useStore = defineStore('store', () => {
     const info = ref({} as TicketInfo);
@@ -33,6 +45,6 @@ export const useStore = defineStore('store', () => {
         return isMobile.value;
     }
 
-    return { info, setInfo, getInfo, setMobile, getMobile }
+    return { setInfo, getInfo, setMobile, getMobile }
 })
 
