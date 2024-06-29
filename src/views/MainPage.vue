@@ -6,7 +6,7 @@ import { fetchAvailableServices, } from "../utils/tickets.utils"
 import type { TicketInfo } from "../models/ticketInfo";
 
 
-import { useStore,useLangStore } from "../stores/ticket";
+import { useStore, useLangStore } from "../stores/ticket";
 import { useRoute, useRouter } from "vue-router";
 import { v4 as uuidv4 } from 'uuid';
 import Cookies from 'js-cookie';
@@ -28,7 +28,7 @@ const username = ref("");
 const password = ref("");
 
 
-const getLang = ()=>{
+const getLang = () => {
     return langStore.getLang();
 }
 
@@ -60,7 +60,7 @@ const registerT = async (serviceId: number) => {
         branchId: parseInt(localStorage.getItem("branch")),
         agent: isMobile.value === true ? Cookies.get('token') : "",
         terminalType: isMobile.value === true ? "MOBILE" : "TERMINAL",
-        language:getLang()
+        language: getLang()
     }
     store.setInfo(object);
     router.push("/info")
@@ -145,18 +145,21 @@ onMounted(() => {
     <main @click="handleTaps()">
         <div class="ticket-container w-full h-full">
             <div class="title text-4xl text-center m-4">
-                {{getLang() ==="RUS"? "Выберите услугу":getLang() ==="KAZ"? "Қызметті таңдаңыз":"Select a service"}}
+                {{ getLang() === "RUS" ? "Выберите услугу" : getLang() === "KAZ" ? "Қызметті таңдаңыз" : `Select a
+                service` }}
             </div>
             <div v-if="services.length > 0" class="services">
                 <div @click="registerT(service.id)" v-for="service in services" :key="service.id" class="service">
                     {{ service.name }}
                 </div>
             </div>
-           
+
             <div v-else class="text-3xl text-center">
-                <div class="emptyText">{{getLang() ==="RUS"? "Нет доступных услуг":getLang() ==="KAZ"? "Қолжетімді қызметтер жоқ":"No available services"}}</div>
+                <div class="emptyText">{{ getLang() === "RUS" ? "Нет доступных услуг" : getLang() === "KAZ" ?
+                    `Қолжетімді
+                    қызметтер жоқ`: "No available services" }}</div>
                 <v-btn class="m-4 text-center" @click="pageReload()">
-                    {{getLang() ==="RUS"? "Обновить":getLang() ==="KAZ"? "Жаңарту":"Reload"}}
+                    {{ getLang() === "RUS" ? "Обновить" : getLang() === "KAZ" ? "Жаңарту" : "Reload" }}
                 </v-btn>
             </div>
 
@@ -175,12 +178,16 @@ onMounted(() => {
                                 <div class="form text-center">
                                     <form @submit.prevent="goToAdmin()">
                                         <div class="mb-3">
-                                            <label for="exampleInputEmail1" class="form-label">Имя пользователя</label>
+                                            <label for="exampleInputEmail1" class="form-label">{{ getLang() === "RUS" ?
+                                                "Имя пользователя" : getLang() === "KAZ" ? "Қолданушы аты" : `User
+                                                name`}}</label>
                                             <input v-model="username" type="text" class="form-control"
                                                 id="exampleInputEmail1" aria-describedby="emailHelp">
                                         </div>
                                         <div class="mb-3">
-                                            <label for="exampleInputPassword1" class="form-label">Пароль</label>
+                                            <label for="exampleInputPassword1" class="form-label">{{ getLang() === "RUS"
+                                                ?
+                                                "Пароль" : getLang() === "KAZ" ? "Құпиясөз" : "Password" }}</label>
                                             <input v-model="password" type="password" class="form-control"
                                                 id="exampleInputPassword1">
                                         </div>
@@ -193,8 +200,11 @@ onMounted(() => {
 
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn @click="goToAdmin()" text="Подтвердить"></v-btn>
-                            <v-btn text="Закрыть" @click="adminRedirect = !adminRedirect"></v-btn>
+                            <v-btn @click="goToAdmin()">{{ getLang() === "RUS" ? "Подтвердить" : getLang() === "KAZ" ?
+                                "Растау" : "Submit" }}</v-btn>
+                            <v-btn @click="adminRedirect = !adminRedirect">{{ getLang() === "RUS" ? "Закрыть" :
+                                getLang() === "KAZ" ?
+                                "Жабу" : "Close" }}</v-btn>
                         </v-card-actions>
                     </v-card>
                 </template>

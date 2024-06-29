@@ -2,13 +2,18 @@
 import type { Ticket } from '../models/ticket.interface';
 import { fetchQueueTickets } from '../utils/tickets.utils';
 import { onMounted, ref } from 'vue';
+import { useLangStore } from '@/stores/ticket';
 
+const langStore = useLangStore();
 const tickets = ref([] as Ticket[])
 const newTickets = ref([] as Ticket[])
 
 const getQueueTickets = async () => {
     tickets.value = await fetchQueueTickets();
     // tickets.value.push(newTickets.value[newTickets.value.length - 1]);
+}
+const getLang = () => {
+    return langStore.getLang()
 }
 onMounted(() => {
     getQueueTickets();
@@ -20,7 +25,7 @@ onMounted(() => {
 <template>
     <div class="container">
         <div class="title text-center text-3xl">
-            Очередь
+            {{ getLang() === "RUS" ? "Очередь" : getLang() === "KAZ" ? "Кезек" : "Queue" }}
         </div>
         <div v-if="tickets.length > 0" class="tickets">
 
@@ -41,7 +46,7 @@ onMounted(() => {
             </div>
         </div>
         <div class="text-3xl text-center" v-else>
-            У вас нет билетов
+            {{ getLang() === "RUS" ? "Пусто" : getLang() === "KAZ" ? "Бос" : "Empty" }}
         </div>
     </div>
 </template>

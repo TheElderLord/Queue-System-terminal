@@ -5,13 +5,16 @@ import { onMounted, ref, watch } from 'vue';
 
 import type { Ticket } from "../models/ticket.interface"
 import { fetchUserTickets, deleteResponse, setRatingRequest } from '../utils/tickets.utils';
+import { useLangStore } from '@/stores/ticket';
 
 const tickets = ref([] as Ticket[]);
 const isCreateActive = ref(false);
 const TicketObject = ref({} as Ticket)
 const rating = ref(0);
 
+
 const audioSource = '/audio2.mp3';
+const lang = useLangStore();
 
 // Reference to the audio element
 const audio = ref(null);
@@ -19,8 +22,8 @@ const audio = ref(null);
 const getRegisteredTickets = async () => {
     console.log("registered tickets")
     tickets.value = await fetchUserTickets();
-    tickets.value.map(e=>{
-        if(e.status === "INSERVICE"){
+    tickets.value.map(e => {
+        if (e.status === "INSERVICE") {
             playAudio()
         }
     })
@@ -61,17 +64,17 @@ const starClick = (value: number) => {
 }
 
 const playAudio = () => {
-  if (audio.value && audio.value.readyState >= 3) { // Check if audio is ready to play
-    audio.value.play();
-  } else {
-    console.warn('Audio is not ready to play');
-  }
+    if (audio.value && audio.value.readyState >= 3) { // Check if audio is ready to play
+        audio.value.play();
+    } else {
+        console.warn('Audio is not ready to play');
+    }
 };
 
 const pauseAudio = () => {
-  if (audio.value) {
-    audio.value.pause();
-  }
+    if (audio.value) {
+        audio.value.pause();
+    }
 };
 // watch(tickets.value,()=>{
 //     tickets.value.map(e=>{
@@ -81,6 +84,9 @@ const pauseAudio = () => {
 //         }
 //     })
 // })
+const getLang = () => {
+    return lang.getLang()
+}
 
 
 onMounted(() => {
@@ -89,23 +95,21 @@ onMounted(() => {
         getRegisteredTickets();
     }, 3000);
     if (audio.value) {
-    audio.value.load();
-    
+        audio.value.load();
 
-  }
+
+    }
 })
 </script>
 <template>
     <main>
-        
+
         <div class="tickets-container">
             <div class="title text-center p-4 text-3xl">
-                <h1>Ваши билеты</h1>
+                <h1>{{ getLang() === "RUS" ? "Ваши билеты" : getLang() === "KAZ" ? "Сіздің билеттеріңіз" : `Your
+                    tickets` }}</h1>
             </div>
-            <div class="tickets ">
-                <audio ref="audio" :src="audioSource" @canplay="onCanPlay" @ended="onAudioEnded"></audio>
-                <button @click="playAudio">Play</button>
-                <button @click="pauseAudio">Pause</button>
+            <div v-if="tickets" class="tickets ">
                 <div class="ticket  my-2 flex " v-for="ticket in tickets" :key="ticket.id">
                     <div class="ticketNum">
                         <h1>{{ ticket.ticketNumber }}</h1>
@@ -123,10 +127,14 @@ onMounted(() => {
                             ticket.windowNum }}
                     </div>
                     <div class="change">
-                        <button @click="show(ticket.id)" class="btn btn-primary">Подробнее</button>
+                        <button @click="show(ticket.id)" class="btn btn-primary">{{ getLang() === "RUS"
+                            ? "Подробнее" : getLang() === "KAZ" ? "Толығырақ" : "More info" }}</button>
                     </div>
                 </div>
 
+            </div>
+            <div class="text-3xl text-center" v-else>
+                {{ getLang() === "RUS" ? "Пусто" : getLang() === "KAZ" ? "Бос" : "Empty" }}
             </div>
             <div class="modal">
                 <v-dialog v-model="isCreateActive" max-width="500">

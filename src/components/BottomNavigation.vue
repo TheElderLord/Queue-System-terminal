@@ -6,7 +6,7 @@ const router = useRouter();
 const value = ref(0)
 
 
-const goTo = (value:string) => {
+const goTo = (value: string) => {
 
     return router.push(value);
 
@@ -26,10 +26,10 @@ const color = computed(() => {
             // goTo("/queue")
             return 'brown';
         }
-        case 3: {
-            // goTo("/queue")
-            return 'blue';
-        }
+        // case 3: {
+        //     // goTo("/queue")
+        //     return 'blue';
+        // }
         default: return 'blue-grey';
     }
 });
@@ -50,16 +50,16 @@ const color = computed(() => {
                     <span>Билеты</span>
                 </v-btn>
 
-                <v-btn  @click="goTo('/queue')">
+                <v-btn @click="goTo('/queue')">
                     <v-icon>mdi-human-queue</v-icon>
 
                     <span>Очередь</span>
                 </v-btn>
-                <v-btn  @click="goTo('/book')">
+                <!-- <v-btn  @click="goTo('/book')">
                     <v-icon>mdi-book-clock-outline</v-icon>
 
                     <span>Очередь</span>
-                </v-btn>
+                </v-btn> -->
 
                 <!-- <v-btn>
                     <v-icon>mdi-image</v-icon>
