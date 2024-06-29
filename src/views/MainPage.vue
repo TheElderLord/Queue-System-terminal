@@ -22,6 +22,7 @@ const taps = ref(0)
 const isMobile = ref(false);
 // const token = ref(Cookies.get('token') || uuidv4() as string);
 const services = ref([] as Service[]);
+const isChild = ref(false)
 
 const adminRedirect = ref(false);
 const username = ref("");
@@ -37,6 +38,7 @@ const pageReload = () => {
 }
 
 const getSessionTickets = async () => {
+    isChild.value = false
     services.value = await fetchAvailableServices();
     console.log(services.value)
 }
@@ -53,6 +55,7 @@ const registerT = async (serviceId: number) => {
     const service = services.value.find(e => e.id === serviceId);
     if (service.maxServTime === 0) {
         services.value = await fetchAvailableServices(serviceId);
+        isChild.value = true
         return
     }
     const object: TicketInfo = {
@@ -144,6 +147,9 @@ onMounted(() => {
 <template>
     <main @click="handleTaps()">
         <div class="ticket-container w-full h-full">
+            <button v-if="isChild" @click="getSessionTickets()" class="btn btn-primary">
+                {{ getLang() === "RUS" ? "Назад" : getLang() === "KAZ" ? "Артқа" : `Back` }}
+            </button>
             <div class="title text-4xl text-center m-4">
                 {{ getLang() === "RUS" ? "Выберите услугу" : getLang() === "KAZ" ? "Қызметті таңдаңыз" : `Select a
                 service` }}
@@ -204,7 +210,7 @@ onMounted(() => {
                                 "Растау" : "Submit" }}</v-btn>
                             <v-btn @click="adminRedirect = !adminRedirect">{{ getLang() === "RUS" ? "Закрыть" :
                                 getLang() === "KAZ" ?
-                                "Жабу" : "Close" }}</v-btn>
+                                    "Жабу" : "Close" }}</v-btn>
                         </v-card-actions>
                     </v-card>
                 </template>
