@@ -37,22 +37,25 @@ onUnmounted(() => {
 
 <template>
   <main>
-    <QueuePage />
+    <!-- <QueuePage /> -->
     <!-- <header v-if="!isAdminPage()">
       <HeaderComponent/>
     </header>
-    <div class="main-container">
-      <RouterView />
-    </div>
+   
     <div v-if="!isAdminPage() && isMobile" class="footer">
       <BottomNavigation />
     </div> -->
+
+    <RouterView />
+
   </main>
 
 </template>
 
 <style lang="scss" scoped>
 main {
+  width: 100%;
+  height: 100vh;
 
   header {
     width: 100%;

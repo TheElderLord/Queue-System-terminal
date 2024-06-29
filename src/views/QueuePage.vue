@@ -3,10 +3,14 @@ import type { Ticket } from '../models/ticket.interface';
 import { fetchQueueTickets } from '../utils/tickets.utils';
 import { onMounted, ref } from 'vue';
 import { useLangStore } from '@/stores/ticket';
+import { useRouter } from 'vue-router';
 
+
+const router = useRouter()
 const langStore = useLangStore();
 const tickets = ref([] as Ticket[])
 const newTickets = ref([] as Ticket[])
+const taps = ref(0 as number)
 
 const getQueueTickets = async () => {
     tickets.value = await fetchQueueTickets();
@@ -15,15 +19,23 @@ const getQueueTickets = async () => {
 const getLang = () => {
     return langStore.getLang()
 }
+const handleTaps = () => {
+    console.log(taps.value)
+    taps.value++;
+    if (taps.value === 3) {
+        router.push("/admin")
+    }
+}
 onMounted(() => {
     getQueueTickets();
     setInterval(() => {
         getQueueTickets();
-    }, 3000)
+    }, 5000)
 })
 </script>
 <template>
-    <div class="container">
+    <div class="queue-container" @click="handleTaps()">
+
         <div class="title text-center text-3xl">
             {{ getLang() === "RUS" ? "Очередь" : getLang() === "KAZ" ? "Кезек" : "Queue" }}
         </div>
@@ -48,10 +60,11 @@ onMounted(() => {
         <div class="text-3xl text-center" v-else>
             {{ getLang() === "RUS" ? "Пусто" : getLang() === "KAZ" ? "Бос" : "Empty" }}
         </div>
+
     </div>
 </template>
 <style lang="scss" scoped>
-.container {
+.queue-container {
     width: 100%;
     height: 100%;
 }

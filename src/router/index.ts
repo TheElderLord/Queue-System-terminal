@@ -16,7 +16,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'main',
-      component: MainPage
+      component: QueuePage
     },
     {
       path: '/info',
@@ -66,7 +66,7 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: TestView
     },
-    
+
 
   ]
 })
