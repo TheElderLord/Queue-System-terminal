@@ -132,8 +132,8 @@ onMounted(() => {
 
     getUrlQuery();
 
-
-
+})
+onUnmounted(() => {
 
 })
 
@@ -145,11 +145,15 @@ onMounted(() => {
 
 </script>
 <template>
-    <main @click="handleTaps()">
+    <main>
+
         <div class="ticket-container w-full h-full">
-            <button v-if="isChild" @click="getSessionTickets()" class="btn btn-primary">
-                {{ getLang() === "RUS" ? "Назад" : getLang() === "KAZ" ? "Артқа" : `Back` }}
-            </button>
+            <div v-if="!isMobile" class="settings float-end absolute right-0">
+                <v-btn @click="adminRedirect = !adminRedirect"><i class="fas fa-tools"></i></v-btn>
+            </div>
+            <v-btn v-if="isChild" @click="getSessionTickets()" class=" absolute left-0">
+                <i class="fa-solid fa-arrow-left"></i>
+            </v-btn>
             <div class="title text-4xl text-center m-4">
                 {{ getLang() === "RUS" ? "Выберите услугу" : getLang() === "KAZ" ? "Қызметті таңдаңыз" : `Select a
                 service` }}
