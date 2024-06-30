@@ -238,8 +238,8 @@ main {
         flex-direction: column;
         flex-wrap: wrap;
         width: 100%;
-        height: 90%;
-        margin-top: 10%;
+        height: 100%;
+
 
         .service {
             margin: 0.5rem auto;
