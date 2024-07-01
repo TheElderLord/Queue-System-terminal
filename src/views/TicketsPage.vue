@@ -55,8 +55,10 @@ const show = (id: number) => {
     const ticket: Ticket = found
     TicketObject.value = ticket;
 }
-const rate = (id: number) => {
-    setRatingRequest(id, rating.value);
+const rate = async (id: number) => {
+    await setRatingRequest(id, rating.value);
+    isCreateActive.value = false;
+    await getRegisteredTickets()
 }
 const starClick = (value: number) => {
     rating.value = value
