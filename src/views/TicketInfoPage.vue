@@ -51,7 +51,7 @@ onMounted(() => {
 </script>
 <template>
     <main>
-        <div v-if="!incompleteTicketError" class="ticket-container">
+        <div v-if="!incompleteTicketError && ticket" class="ticket-container">
             <div class="ticketNumber text-4xl">
                 <h1>{{ ticket.ticketNumber }}</h1>
             </div>
