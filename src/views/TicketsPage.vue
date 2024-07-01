@@ -111,23 +111,23 @@ onMounted(() => {
             </div>
             <div v-if="tickets" class="tickets ">
                 <div class="ticket  my-2 flex " v-for="ticket in tickets" :key="ticket.id">
-                    <div class="ticketNum">
-                        <h1>{{ ticket.ticketNumber }}</h1>
+                    <div class="ticketNum text-lg">
+                        {{ ticket.ticketNumber }}
                     </div>
-                    <div class="service">
+                    <div class="service text-lg">
                         {{ ticket.serviceName }}
                     </div>
                     <!-- <div class="date">
                         {{ formatDate(ticket.registrationTime) }}
                     </div> -->
-                    <div class="status">
+                    <div class="status text-sm">
                         {{ ticket.status === "NEW" ? "Вас скоро вызовут" : ticket.status === "COMPLETED" ? `Билет
                         обслужен`:
                             "Подойдите к окну: " +
                             ticket.windowNum }}
                     </div>
-                    <div class="change">
-                        <button @click="show(ticket.id)" class="btn btn-primary">{{ getLang() === "RUS"
+                    <div class="change ">
+                        <button @click="show(ticket.id)" class="btn btn-primary text-sm">{{ getLang() === "RUS"
                             ? "Подробнее" : getLang() === "KAZ" ? "Толығырақ" : "More info" }}</button>
                     </div>
                 </div>
