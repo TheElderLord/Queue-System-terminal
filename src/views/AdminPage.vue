@@ -2,7 +2,7 @@
 import { onMounted, ref, } from "vue";
 
 
-import type { Branch } from "../models/branch.interface"
+import type { Branch } from "../models/branch/branch.interface"
 import { fetchBranches } from "../utils/branches.utils"
 
 import { useRouter } from "vue-router";

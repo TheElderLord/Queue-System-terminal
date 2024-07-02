@@ -11,12 +11,12 @@ const handleClick = (value: string) => {
         <div class="title w-full">
             <h1 class="text-3xl">Терминал</h1>
         </div>
-        <div class="langs flex justify-around w-1/5">
+        <div class="langs flex justify-around w-full">
             <div @click="handleClick('KAZ')"
                 class="lang flex items-center bg-orange-600 px-4 text-white cursor-pointer">KZ</div>
             <div @click="handleClick('RUS')"
                 class="lang flex items-center bg-orange-600 px-4 text-white cursor-pointer">RU</div>
-            <!-- <div @click="handleClick('ENG')" class="lang flex items-center bg-orange-600 px-4  px-4 text-white cursor-pointer">EN</div> -->
+            <div @click="handleClick('ENG')" class="lang flex items-center bg-orange-600 px-4  px-4 text-white cursor-pointer">EN</div>
         </div>
     </div>
 </template>

@@ -10,6 +10,8 @@ import { useStore, useLangStore } from "../stores/ticket";
 import { useRoute, useRouter } from "vue-router";
 import { v4 as uuidv4 } from 'uuid';
 import Cookies from 'js-cookie';
+import type { BranchLocation } from "@/models/branch/branchLocation";
+import { fetchBranchLocation } from "@/utils/branches.utils";
 
 
 const store = useStore();
@@ -18,8 +20,12 @@ const router = useRouter();
 const route = useRoute();
 
 
-const taps = ref(0)
+
 const isMobile = ref(false);
+const userCoordinate = ref({} as BranchLocation);
+const branchLocation = ref({} as BranchLocation);
+const isInBuilding =  ref(false)
+const radius = 1500
 // const token = ref(Cookies.get('token') || uuidv4() as string);
 const services = ref([] as Service[]);
 const isChild = ref(false)
@@ -27,6 +33,66 @@ const isChild = ref(false)
 const adminRedirect = ref(false);
 const username = ref("");
 const password = ref("");
+
+//Location
+const getLocation =()=> {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            userCoordinate.value = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            };
+            checkIfInBuilding();
+          },
+          error => {
+            console.error('Error getting location: ', error);
+            alert('Unable to retrieve your location');
+          }
+        );
+      } else {
+        alert('Geolocation is not supported by this browser.');
+      }
+      console.log(userCoordinate.value)
+    }
+const toRadians = (degrees: number) => {
+    return degrees * Math.PI / 180;
+};
+
+const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const R = 6371e3; // Radius of the Earth in meters
+    const φ1 = toRadians(lat1);
+    const φ2 = toRadians(lat2);
+    const Δφ = toRadians(lat2 - lat1);
+    const Δλ = toRadians(lon2 - lon1);
+
+    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+        Math.cos(φ1) * Math.cos(φ2) *
+        Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c; // Distance in meters
+}
+
+const checkIfInBuilding=()=> {
+      const distance = calculateDistance(
+        userCoordinate.value.lat,
+        userCoordinate.value.lng,
+        branchLocation.value.lat,
+        branchLocation.value.lng
+      );
+      console.log(distance);
+      console.log(radius);
+      isInBuilding.value = distance <= radius;
+    }
+
+ const getBranchLocation = async()=>{
+    const branchId = localStorage.getItem("branch");
+    branchLocation.value = await fetchBranchLocation(Number(branchId));
+ }   
+
+
+//Location
 
 
 const getLang = () => {
@@ -37,11 +103,9 @@ const pageReload = () => {
     location.reload();
 }
 
-const getSessionTickets = async () => {
-    isChild.value = false
-    services.value = await fetchAvailableServices();
-    console.log(services.value)
-}
+
+
+
 
 const generateToken = () => {
     const newToken = Cookies.get('token') || uuidv4();
@@ -50,8 +114,16 @@ const generateToken = () => {
     Cookies.set('token', newToken, { expires: 7 }); // Expires in 7 days
 };
 
-
+const getSessionTickets = async () => {
+    isChild.value = false
+    services.value = await fetchAvailableServices();
+    console.log(services.value)
+}
 const registerT = async (serviceId: number) => {
+    getLocation();
+    if(!isInBuilding.value && isMobile.value){
+       return  alert("Вы должны быть в отделении")
+    }
     const service = services.value.find(e => e.id === serviceId);
     if (service.maxServTime === 0) {
         services.value = await fetchAvailableServices(serviceId);
@@ -70,19 +142,8 @@ const registerT = async (serviceId: number) => {
 
     // const result = await registerTicket(serviceId, 1);
     // console.log(result);
-
 }
 
-const handleTaps = () => {
-    if (isMobile.value) {
-        return
-    }
-    taps.value++;
-    if (taps.value === 5) {
-        adminRedirect.value = true;
-        // Redirect to another page after 3 taps
-    }
-}
 const goToAdmin = () => {
     if (username.value === "admin" && password.value === "admin")
         router.push("/admin");
@@ -96,6 +157,16 @@ const getUrlQuery = () => {
         }
 
     }
+}
+
+const formatService = (service:string)=>{
+    const splitService = service.split(";");
+    let formatted; 
+    splitService.map(e=>{
+        if(e.includes(getLang()))
+        formatted= e.replace(`${getLang()}=`,"");
+    })
+    return formatted;
 }
 
 watch(
@@ -127,7 +198,7 @@ onMounted(() => {
     // location.reload()
     getSessionTickets();
     generateToken();
-
+    getBranchLocation();
     isMobile.value = store.getMobile()
 
     getUrlQuery();
@@ -160,7 +231,7 @@ onUnmounted(() => {
             </div>
             <div v-if="services.length > 0" class="services">
                 <div @click="registerT(service.id)" v-for="service in services" :key="service.id" class="service">
-                    {{ service.name }}
+                   {{  formatService(service.name) }}
                 </div>
             </div>
 
