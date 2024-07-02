@@ -6,10 +6,11 @@ import { TICKETS_URL, REGISTER_TICKET_URL, USER_TICKETS_URL, QUEUE_URL, BASE_URL
 import type { Ticket } from "@/models/ticket.interface";
 import type { Service } from "@/models/services.interface"
 import type { TicketInfo } from "@/models/ticketInfo";
+import type { TicketRating } from "@/models/ticketRating.interface";
 
 const branch = localStorage.getItem("branch");
 
-export const fetchAvailableServices = async (serviceId:number): Promise<Service[]> => {
+export const fetchAvailableServices = async (serviceId: number): Promise<Service[]> => {
     try {
         const url = serviceId ? `${TICKETS_URL}/${branch}?serviceId=${serviceId}` : `${TICKETS_URL}/${branch}`
         const response: AxiosResponse<Service[]> = await axios.get<Service[]>(url);
@@ -68,9 +69,9 @@ export const deleteResponse = async (id: number): Promise<Ticket[]> => {
         throw error; // Re-throw the error to handle it elsewhere if needed
     }
 }
-export const setRatingRequest = async (id: number, rating: number): Promise<Ticket[]> => {
+export const setRatingRequest = async (object: TicketRating): Promise<Ticket[]> => {
     try {
-        const response: AxiosResponse<Ticket[]> = await axios.put<Ticket[]>(`${BASE_URL}/tickets/rating/${id}?rating=${rating}`);
+        const response = await axios.put(`${BASE_URL}/tickets/rating`, object);
         return response.data;
     } catch (error) {
         console.error("Error putting rating:", error);

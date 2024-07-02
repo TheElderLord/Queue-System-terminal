@@ -6,14 +6,17 @@ import { onMounted, ref, watch } from 'vue';
 import type { Ticket } from "../models/ticket.interface"
 import { fetchUserTickets, deleteResponse, setRatingRequest } from '../utils/tickets.utils';
 import { useLangStore } from '@/stores/ticket';
+import type { TicketRating } from '@/models/ticketRating.interface';
 
 const tickets = ref([] as Ticket[]);
 const isCreateActive = ref(false);
 const TicketObject = ref({} as Ticket)
-const rating = ref(0);
+const ratingObject = ref({} as TicketRating);
+const comment = ref("");
 
 
-const audioSource = '/audio2.mp3';
+
+// const audioSource = '/audio2.mp3';
 const lang = useLangStore();
 
 // Reference to the audio element
@@ -22,20 +25,25 @@ const audio = ref(null);
 const getRegisteredTickets = async () => {
     console.log("registered tickets")
     tickets.value = await fetchUserTickets();
-    tickets.value.map(e => {
-        if (e.status === "INSERVICE") {
-            playAudio()
-        }
-    })
+    // tickets.value.map(e => {
+    //     if (e.status === "INSERVICE") {
+    //         playAudio()
+    //     }
+    // })
 
 
 }
 const formatDate = (date: Date) => {
+
     return new Date(date).toLocaleString("ru-RU")
 }
 const close = () => {
     isCreateActive.value = false;
-    rating.value = 0;
+    ratingObject.value = {
+        id: 0,
+        rating: 0,
+        comment: ""
+    };
 }
 const deleteTicket = async (id: number) => {
     try {
@@ -56,28 +64,30 @@ const show = (id: number) => {
     TicketObject.value = ticket;
 }
 const rate = async (id: number) => {
-    await setRatingRequest(id, rating.value);
+    ratingObject.value.id = id;
+    ratingObject.value.comment = comment.value;
+    await setRatingRequest(ratingObject.value);
     isCreateActive.value = false;
     await getRegisteredTickets()
 }
 const starClick = (value: number) => {
-    rating.value = value
+    ratingObject.value.rating = value
     console.log(value)
 }
 
-const playAudio = () => {
-    if (audio.value && audio.value.readyState >= 3) { // Check if audio is ready to play
-        audio.value.play();
-    } else {
-        console.warn('Audio is not ready to play');
-    }
-};
+// const playAudio = () => {
+//     if (audio.value && audio.value.readyState >= 3) { // Check if audio is ready to play
+//         audio.value.play();
+//     } else {
+//         console.warn('Audio is not ready to play');
+//     }
+// };
 
-const pauseAudio = () => {
-    if (audio.value) {
-        audio.value.pause();
-    }
-};
+// const pauseAudio = () => {
+//     if (audio.value) {
+//         audio.value.pause();
+//     }
+// };
 // watch(tickets.value,()=>{
 //     tickets.value.map(e=>{
 //         console.log(tickets.value)
@@ -96,11 +106,7 @@ onMounted(() => {
     setTimeout(() => {
         getRegisteredTickets();
     }, 3000);
-    if (audio.value) {
-        audio.value.load();
 
-
-    }
 })
 </script>
 <template>
@@ -150,46 +156,55 @@ onMounted(() => {
                                 <div class="card">
                                     <ul class="list-group list-group-flush">
                                         <li class="list-group-item text-3xl">
-                                            <h1>{{ TicketObject.ticketNumber }}</h1>
+                                            <h1>Номер билета:{{ TicketObject.ticketNumber }}</h1>
                                         </li>
-                                        <li class="list-group-item">{{ formatDate(TicketObject.registrationTime) }}</li>
-                                        <li class="list-group-item">{{ TicketObject.serviceName }}</li>
-                                        <li class="list-group-item">{{ TicketObject.branchName }}</li>
-                                        <li class="list-group-item">{{ TicketObject.windowNum }}</li>
-                                        <li class="list-group-item">{{ TicketObject.rating === 0 ? `Вы еще не поставили
+                                        <li class="list-group-item">Время регистрации:{{
+                                            formatDate(TicketObject.registrationTime) }}</li>
+                                        <li class="list-group-item">Название услуги:{{ TicketObject.serviceName }}</li>
+                                        <li class="list-group-item">Отделение:{{ TicketObject.branchName }}</li>
+                                        <li class="list-group-item">Номер окна:{{ TicketObject.windowNum }}</li>
+                                        <li class="list-group-item">Ваша оценка:{{ TicketObject.rating === 0 ? `Вы еще
+                                            не поставили
                                             оценку`: TicketObject.rating }}</li>
                                         <li class="list-group-item">{{ TicketObject.status === "NEW" ?
                                             "Ждет обслуживания" : "Обслужен" }} </li>
                                         <li v-if="TicketObject.status === 'COMPLETED' && TicketObject.rating === 0">
                                             <div class="stars flex w-fit mx-auto">
 
-                                                <div :class="{ 'text-red-500': rating === 1 || rating === 2 || rating === 3 || rating === 4 || rating === 5 }"
+                                                <div :class="{ 'text-red-500': ratingObject.rating === 1 || ratingObject.rating === 2 || ratingObject.rating === 3 || ratingObject.rating === 4 || ratingObject.rating === 5 }"
                                                     @click="starClick(1)" class="star">
                                                     <i class="fas fa-star"></i>
                                                 </div>
-                                                <div :class="{ 'text-red-500': rating === 2 || rating === 3 || rating === 4 || rating === 5 }"
+                                                <div :class="{ 'text-red-500': ratingObject.rating === 2 || ratingObject.rating === 3 || ratingObject.rating === 4 || ratingObject.rating === 5 }"
                                                     @click="starClick(2)" class="star">
                                                     <i class="fas fa-star"></i>
                                                 </div>
-                                                <div :class="{ 'text-red-500': rating === 3 || (rating === 4 || rating === 5) }"
+                                                <div :class="{ 'text-red-500': ratingObject.rating === 3 || (ratingObject.rating === 4 || ratingObject.rating === 5) }"
                                                     @click="starClick(3)" class="star">
                                                     <i class="fas fa-star"></i>
                                                 </div>
-                                                <div :class="{ 'text-red-500': rating === 4 || rating === 5 }"
+                                                <div :class="{ 'text-red-500': ratingObject.rating === 4 || ratingObject.rating === 5 }"
                                                     @click="starClick(4)" class="star">
                                                     <i class="fas fa-star"></i>
                                                 </div>
-                                                <div :class="{ 'text-red-500': rating === 5 }" @click="starClick(5)"
-                                                    class="star">
+                                                <div :class="{ 'text-red-500': ratingObject.rating === 5 }"
+                                                    @click="starClick(5)" class="star">
                                                     <i class="fas fa-star"></i>
                                                 </div>
 
-
-
-
                                             </div>
-                                            <v-btn class="mt-5" @click="rate(TicketObject.id)" text="Оценить"></v-btn>
 
+
+                                        </li>
+                                        <li v-if="TicketObject.status === 'COMPLETED' && TicketObject.rating === 0"
+                                            class="list-group-item">
+                                            <input class="w-full p-2 border" type="text" v-model="comment">
+                                        </li>
+                                        <li v-if="TicketObject.status === 'COMPLETED' && TicketObject.rating !== 0"
+                                            class="list-group-item">
+                                            Комментарии:{{ TicketObject.comment }}
+                                        </li>
+                                        <li><v-btn class="mt-5" @click="rate(TicketObject.id)" text="Оценить"></v-btn>
                                         </li>
                                     </ul>
                                 </div>
