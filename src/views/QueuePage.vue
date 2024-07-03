@@ -5,17 +5,26 @@ import { onMounted, ref } from 'vue';
 import { useLangStore } from '@/stores/ticket';
 
 const langStore = useLangStore();
-const tickets = ref([] as Ticket[])
-const newTickets = ref([] as Ticket[])
+const tickets = ref([] as Ticket[]);
+const newTickets = ref([] as Ticket[]);
+
+const branchId = ref(0 as number);
 
 const getQueueTickets = async () => {
-    tickets.value = await fetchQueueTickets();
+    tickets.value = await fetchQueueTickets(branchId.value);
     // tickets.value.push(newTickets.value[newTickets.value.length - 1]);
+}
+const getBranchFromLocalStorage=()=>{
+    const branch = localStorage.getItem("branch");
+    if(branch){
+        branchId.value = parseInt(branch);
+    }
 }
 const getLang = () => {
     return langStore.getLang()
 }
 onMounted(() => {
+    getBranchFromLocalStorage()
     getQueueTickets();
     setInterval(() => {
         getQueueTickets();

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import { onMounted, ref, watch } from 'vue';
+import Cookies from "js-cookie";
 
 
 import type { Ticket } from "../models/ticket.interface"
@@ -14,17 +15,14 @@ const TicketObject = ref({} as Ticket)
 const ratingObject = ref({} as TicketRating);
 const comment = ref("");
 
-
-
-// const audioSource = '/audio2.mp3';
 const lang = useLangStore();
 
-// Reference to the audio element
-const audio = ref(null);
+
 
 const getRegisteredTickets = async () => {
     console.log("registered tickets")
-    tickets.value = await fetchUserTickets();
+    const token = Cookies.get('token') || "";
+    tickets.value = await fetchUserTickets(token);
     // tickets.value.map(e => {
     //     if (e.status === "INSERVICE") {
     //         playAudio()
@@ -75,27 +73,7 @@ const starClick = (value: number) => {
     console.log(value)
 }
 
-// const playAudio = () => {
-//     if (audio.value && audio.value.readyState >= 3) { // Check if audio is ready to play
-//         audio.value.play();
-//     } else {
-//         console.warn('Audio is not ready to play');
-//     }
-// };
 
-// const pauseAudio = () => {
-//     if (audio.value) {
-//         audio.value.pause();
-//     }
-// };
-// watch(tickets.value,()=>{
-//     tickets.value.map(e=>{
-//         console.log(tickets.value)
-//         if(e.status === "INSERVICE"){
-//             playAudio();
-//         }
-//     })
-// })
 const getLang = () => {
     return lang.getLang()
 }

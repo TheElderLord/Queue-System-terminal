@@ -21,40 +21,42 @@ const route = useRoute();
 
 
 
-const isMobile = ref(false);
+
 const userCoordinate = ref({} as BranchLocation);
 const branchLocation = ref({} as BranchLocation);
-const isInBuilding =  ref(false)
+const isInBuilding = ref(false)
 const radius = 1500
 // const token = ref(Cookies.get('token') || uuidv4() as string);
 const services = ref([] as Service[]);
 const isChild = ref(false)
+const isBranchSelected = ref(true);
+const branchId = ref(0 as number);
 
 const adminRedirect = ref(false);
 const username = ref("");
 const password = ref("");
 
 //Location
-const getLocation =()=> {
-      if (navigator.geolocation) {
+const getLocation = () => {
+    if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-          position => {
-            userCoordinate.value = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            };
-            checkIfInBuilding();
-          },
-          error => {
-            console.error('Error getting location: ', error);
-            alert('Unable to retrieve your location');
-          }
+            position => {
+                userCoordinate.value = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                };
+                checkIfInBuilding();
+            },
+            error => {
+                console.error('Error getting location: ', error);
+                alert('Unable to retrieve your location');
+            }
         );
-      } else {
+    } else {
         alert('Geolocation is not supported by this browser.');
-      }
-      console.log(userCoordinate.value)
     }
+    console.log(userCoordinate.value)
+}
 const toRadians = (degrees: number) => {
     return degrees * Math.PI / 180;
 };
@@ -74,22 +76,22 @@ const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: numbe
     return R * c; // Distance in meters
 }
 
-const checkIfInBuilding=()=> {
-      const distance = calculateDistance(
+const checkIfInBuilding = () => {
+    const distance = calculateDistance(
         userCoordinate.value.lat,
         userCoordinate.value.lng,
         branchLocation.value.lat,
         branchLocation.value.lng
-      );
-      console.log(distance);
-      console.log(radius);
-      isInBuilding.value = distance <= radius;
-    }
+    );
+    console.log(distance);
+    console.log(radius);
+    isInBuilding.value = distance <= radius;
+}
 
- const getBranchLocation = async()=>{
-    const branchId = localStorage.getItem("branch");
-    branchLocation.value = await fetchBranchLocation(Number(branchId));
- }   
+const getBranchLocation = async () => {
+    // const branchId = localStorage.getItem("branch");
+    branchLocation.value = await fetchBranchLocation(branchId.value);
+}
 
 
 //Location
@@ -98,14 +100,9 @@ const checkIfInBuilding=()=> {
 const getLang = () => {
     return langStore.getLang();
 }
-
-const pageReload = () => {
-    location.reload();
+const getMobile =()=>{
+    return store.getMobile();
 }
-
-
-
-
 
 const generateToken = () => {
     const newToken = Cookies.get('token') || uuidv4();
@@ -116,25 +113,25 @@ const generateToken = () => {
 
 const getSessionTickets = async () => {
     isChild.value = false
-    services.value = await fetchAvailableServices();
+    services.value = await fetchAvailableServices(null, branchId.value);
     console.log(services.value)
 }
 const registerT = async (serviceId: number) => {
-    getLocation();
-    if(!isInBuilding.value && isMobile.value){
-       return  alert("Вы должны быть в отделении")
-    }
+    // getLocation();
+    // if(!isInBuilding.value && isMobile.value){
+    //    return  alert("Вы должны быть в отделении")
+    // }
     const service = services.value.find(e => e.id === serviceId);
-    if (service.maxServTime === 0) {
-        services.value = await fetchAvailableServices(serviceId);
+    if (service?.maxServTime === 0) {
+        services.value = await fetchAvailableServices(serviceId, branchId.value);
         isChild.value = true
         return
     }
     const object: TicketInfo = {
         serviceId: serviceId,
-        branchId: parseInt(localStorage.getItem("branch")),
-        agent: isMobile.value === true ? Cookies.get('token') : "",
-        terminalType: isMobile.value === true ? "MOBILE" : "TERMINAL",
+        branchId: branchId.value,
+        agent: getMobile() === true ? Cookies.get('token') : "",
+        terminalType: getMobile() === true ? "MOBILE" : "TERMINAL",
         language: getLang()
     }
     store.setInfo(object);
@@ -149,7 +146,7 @@ const goToAdmin = () => {
         router.push("/admin");
 }
 const getUrlQuery = () => {
-    if (isMobile.value === true) {
+    if (store.getMobile() === true) {
         if (route.query.branch !== undefined) {
             const query = route.query.branch;
             console.log(query);
@@ -159,67 +156,65 @@ const getUrlQuery = () => {
     }
 }
 
-const formatService = (service:string)=>{
-    const splitService = service.split(";");
-    let formatted; 
-    splitService.map(e=>{
-        if(e.includes(getLang()))
-        formatted= e.replace(`${getLang()}=`,"");
-    })
-    return formatted;
-}
+// const formatService = (service:string)=>{
+//     const splitService = service.split(";");
+//     let formatted; 
+//     splitService.map(e=>{
+//         if(e.includes(getLang()))
+//         formatted= e.replace(`${getLang()}=`,"");
+//     })
+//     return formatted;
+// }
+
 
 watch(
-    () => store.getMobile(),
+    () => services.value,
     (newValue) => {
-        // console.log(typeof newValue)
-        isMobile.value = newValue;
-        console.log("Mobile status changed:", newValue);
-        // if (newValue === true) {
-        //     getUrlQuery();
-        // }
-    }
-);
-watch(
-    () => route.query.branch,
-    (newValue) => {
-        if (newValue !== undefined) {
-            localStorage.setItem("branch", route.query.branch + "")
-            pageReload()
+        if (newValue.length === 0) {
             getSessionTickets();
         }
-
-
-    }
+    },
+    { immediate: true }
 );
 
+// watch(
+//     () => route.query.branch,
+//     (newValue) => {
+//         if (newValue !== undefined) {
+//             localStorage.setItem("branch", route.query.branch + "")
+//             pageReload()
+//             getSessionTickets();
+//         }
+
+//     },
+//     { immediate: true }
+// );
+
+const getBranchFromLocalStorage = () => {
+    const branch = localStorage.getItem("branch");
+    if (branch) {
+        branchId.value = parseInt(branch);
+    }
+    else{
+        isBranchSelected.value = false
+    }
+}
 
 onMounted(() => {
-    // location.reload()
-    getSessionTickets();
-    generateToken();
-    getBranchLocation();
-    isMobile.value = store.getMobile()
 
     getUrlQuery();
+    getBranchFromLocalStorage();
+    getSessionTickets();
+    generateToken();
+
 
 })
-onUnmounted(() => {
-
-})
-
-
-
-
-
-
-
 </script>
 <template>
     <main>
 
         <div class="ticket-container w-full h-full">
-            <div v-if="!isMobile" class="settings float-end absolute right-0">
+            <div v-if="!getMobile()" class="settings float-end absolute right-0">
                 <v-btn @click="adminRedirect = !adminRedirect"><i class="fas fa-tools"></i></v-btn>
             </div>
             <v-btn v-if="isChild" @click="getSessionTickets()" class=" absolute left-0">
@@ -231,7 +226,7 @@ onUnmounted(() => {
             </div>
             <div v-if="services.length > 0" class="services">
                 <div @click="registerT(service.id)" v-for="service in services" :key="service.id" class="service">
-                   {{  formatService(service.name) }}
+                    {{ service.name }}
                 </div>
             </div>
 
@@ -239,9 +234,13 @@ onUnmounted(() => {
                 <div class="emptyText">{{ getLang() === "RUS" ? "Нет доступных услуг" : getLang() === "KAZ" ?
                     `Қолжетімді
                     қызметтер жоқ`: "No available services" }}</div>
-                <v-btn class="m-4 text-center" @click="pageReload()">
-                    {{ getLang() === "RUS" ? "Обновить" : getLang() === "KAZ" ? "Жаңарту" : "Reload" }}
-                </v-btn>
+                <div v-if="getMobile() && !isBranchSelected" class="emptyText">{{ getLang() === "RUS" ? `Сканируйте QR
+                    заново` : getLang() === "KAZ" ?
+                    `QR кодты қайтадан сканерлеңіз`: "Scan QR code again" }}</div>
+                <div v-if="!getMobile() && !isBranchSelected" class="emptyText">{{ getLang() === "RUS" ? `Нужно выбрать
+                    отделение` : getLang() === "KAZ" ?
+                    `Бөлімшені таңдаңыз`: "Need to select a branch" }}</div>
+               
             </div>
 
 
