@@ -319,8 +319,8 @@ main {
         flex-direction: column;
         flex-wrap: wrap;
         width: 100%;
-        height: 80%;
-        overflow: auto;
+        height: 100%;
+        overflow: scroll;
 
 
         .service {
