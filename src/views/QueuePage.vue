@@ -17,7 +17,7 @@ const getQueueTickets = async () => {
 const getBranchFromLocalStorage=()=>{
     const branch = localStorage.getItem("branch");
     if(branch){
-        branchId.value = parseInt(branch);
+        branchId.value = Number(branch);
     }
 }
 const getLang = () => {

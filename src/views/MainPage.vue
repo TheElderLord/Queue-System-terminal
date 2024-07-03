@@ -177,7 +177,10 @@ watch(
     () => services.value,
     (newValue) => {
         if (newValue.length === 0) {
-            getSessionTickets();
+            setTimeout(()=>{
+                getSessionTickets();
+            },3000)
+           
         }
     },
     { immediate: true }
@@ -199,7 +202,7 @@ watch(
 const getBranchFromLocalStorage = () => {
     const branch = localStorage.getItem("branch");
     if (branch) {
-        branchId.value = parseInt(branch);
+        branchId.value = Number(branch);
     }
     else{
         isBranchSelected.value = false
@@ -227,7 +230,7 @@ onMounted(() => {
             <v-btn v-if="isChild" @click="getSessionTickets()" class=" absolute left-0">
                 <i class="fa-solid fa-arrow-left"></i>
             </v-btn>
-            <div v-if="getMobile()" class="branchInfo text-center">
+            <div  class="branchInfo text-center">
                 <h1 class="text-2xl font-bold">{{branchInfo.name}}</h1><br>
                 <h1 class="text-2xl font-bold">{{branchInfo.description}}</h1>
             </div>
