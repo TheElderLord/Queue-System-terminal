@@ -11,7 +11,8 @@ import { useRoute, useRouter } from "vue-router";
 import { v4 as uuidv4 } from 'uuid';
 import Cookies from 'js-cookie';
 import type { BranchLocation } from "@/models/branch/branchLocation";
-import { fetchBranchLocation } from "@/utils/branches.utils";
+import { fetchBranchById, fetchBranchLocation } from "@/utils/branches.utils";
+import type { Branch } from "@/models/branch/branch.interface";
 
 
 const store = useStore();
@@ -31,6 +32,7 @@ const services = ref([] as Service[]);
 const isChild = ref(false)
 const isBranchSelected = ref(true);
 const branchId = ref(0 as number);
+const branchInfo = ref({} as Branch);
 
 const adminRedirect = ref(false);
 const username = ref("");
@@ -156,15 +158,19 @@ const getUrlQuery = () => {
     }
 }
 
-// const formatService = (service:string)=>{
-//     const splitService = service.split(";");
-//     let formatted; 
-//     splitService.map(e=>{
-//         if(e.includes(getLang()))
-//         formatted= e.replace(`${getLang()}=`,"");
-//     })
-//     return formatted;
-// }
+const getBranchInfo = async()=>{
+    branchInfo.value = await fetchBranchById(branchId.value);
+}
+
+const formatService = (service:string)=>{
+    const splitService = service.split(";");
+    let formatted; 
+    splitService.map(e=>{
+        if(e.includes(getLang()))
+        formatted= e.replace(`${getLang()}=`,"");
+    })
+    return formatted;
+}
 
 
 watch(
@@ -205,6 +211,7 @@ onMounted(() => {
     getUrlQuery();
     getBranchFromLocalStorage();
     getSessionTickets();
+    getBranchInfo();
     generateToken();
 
 
@@ -220,7 +227,11 @@ onMounted(() => {
             <v-btn v-if="isChild" @click="getSessionTickets()" class=" absolute left-0">
                 <i class="fa-solid fa-arrow-left"></i>
             </v-btn>
-            <div class="title text-4xl text-center m-4">
+            <div v-if="getMobile()" class="branchInfo text-center">
+                <h1 class="text-2xl font-bold">{{branchInfo.name}}</h1><br>
+                <h1 class="text-2xl font-bold">{{branchInfo.description}}</h1>
+            </div>
+            <div class="title text-4xl text-center m-4  sm:text-2xl">
                 {{ getLang() === "RUS" ? "Выберите услугу" : getLang() === "KAZ" ? "Қызметті таңдаңыз" : `Select a
                 service` }}
             </div>
@@ -308,7 +319,7 @@ main {
         flex-direction: column;
         flex-wrap: wrap;
         width: 100%;
-        height: 100%;
+        height: 90%;
 
 
         .service {

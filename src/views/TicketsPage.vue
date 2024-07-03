@@ -113,8 +113,7 @@ onMounted(() => {
                             ticket.windowNum }}
                     </div>
                     <div class="change ">
-                        <button @click="show(ticket.id)" class="btn btn-primary text-sm">{{ getLang() === "RUS"
-                            ? "Подробнее" : getLang() === "KAZ" ? "Толығырақ" : "More info" }}</button>
+                        <button @click="show(ticket.id)" class="btn btn-primary text-sm"><i class="fas fa-info-circle"></i></button>
                     </div>
                 </div>
 
@@ -253,6 +252,11 @@ main {
 @media (min-width: 480px) {
     .tickets {
         width: 100vw;
+        .ticket{
+            .ticketNum h1{
+            font-size: 24px;
+            }
+        }
     }
 }
 </style>
