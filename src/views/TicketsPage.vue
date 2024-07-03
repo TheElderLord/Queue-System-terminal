@@ -91,7 +91,7 @@ onMounted(() => {
     <main>
 
         <div class="tickets-container">
-            <div class="title text-center p-4 text-3xl">
+            <div class="title text-center p-4 text-2xl">
                 <h1>{{ getLang() === "RUS" ? "Ваши билеты" : getLang() === "KAZ" ? "Сіздің билеттеріңіз" : `Your
                     tickets` }}</h1>
             </div>

@@ -231,7 +231,7 @@ onMounted(() => {
                 <h1 class="text-2xl font-bold">{{branchInfo.name}}</h1><br>
                 <h1 class="text-2xl font-bold">{{branchInfo.description}}</h1>
             </div>
-            <div class="title text-4xl text-center m-4  sm:text-2xl">
+            <div class="title text-2xl text-center m-4  sm:text-2xl">
                 {{ getLang() === "RUS" ? "Выберите услугу" : getLang() === "KAZ" ? "Қызметті таңдаңыз" : `Select a
                 service` }}
             </div>
@@ -319,7 +319,8 @@ main {
         flex-direction: column;
         flex-wrap: wrap;
         width: 100%;
-        height: 90%;
+        height: 80%;
+        overflow: auto;
 
 
         .service {
