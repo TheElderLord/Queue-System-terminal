@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { useStore } from '../stores/ticket'
+import { useStore, useLangStore } from '../stores/ticket'
 import { onMounted, ref } from 'vue';
 import type { TicketInfo } from '../models/ticketInfo';
 import type { Ticket } from '../models/ticket.interface'
@@ -10,6 +10,7 @@ import axios from 'axios';
 
 
 const store = useStore()
+const langStore = useLangStore();
 const router = useRouter()
 
 const ticket = ref({} as Ticket);
@@ -27,7 +28,8 @@ const registerT = async () => {
         incompleteTicketError.value = true;
         if (axios.isAxiosError(error)) {
             if (error.response && error.response.status === 403) {
-                incompleteTicketErrorMessage.value = "У вас есть еще не обслуженный билет";
+                incompleteTicketErrorMessage.value = `${getLang() === 'RUS' ? 'У вас есть еще не обслуженный билет' :
+                    getLang() === 'KAZ' ? 'Сізді әлі қызмет көрсетілмеген билеттер бар' : 'You have unserved tickets'}`;
             } else if (error.response) {
                 incompleteTicketErrorMessage.value = `Error: ${error.response.status} - ${error.response.statusText}`;
             } else {
@@ -45,6 +47,20 @@ const formatDate = (date: Date) => {
     return new Date(date).toLocaleString("ru-RU")
 }
 
+const formatService = (service: string) => {
+    const splitService = service.split(";");
+    let formatted;
+    splitService.map(e => {
+        if (e.includes(getLang()))
+            formatted = e.replace(`${getLang()}=`, "");
+    })
+    return formatted;
+}
+
+
+const getLang = () => {
+    return lang.getLang()
+}
 onMounted(() => {
     registerT();
 })
@@ -56,7 +72,7 @@ onMounted(() => {
                 <h1>{{ ticket.ticketNumber }}</h1>
             </div>
             <div class="serviceName text-3xl">
-                <h1>{{ ticket.serviceName }}</h1>
+                <h1>{{ formatService(ticket.serviceName) }}</h1>
             </div>
             <div class="date text-3xl">
                 <h1>{{ formatDate(ticket.registrationTime) }}</h1>
