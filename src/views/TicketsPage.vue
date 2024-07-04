@@ -73,6 +73,16 @@ const starClick = (value: number) => {
     console.log(value)
 }
 
+const formatService = (service: string) => {
+    const splitService = service.split(";");
+    let formatted;
+    splitService.map(e => {
+        if (e.includes(getLang()))
+            formatted = e.replace(`${getLang()}=`, "");
+    })
+    return formatted;
+}
+
 
 const getLang = () => {
     return lang.getLang()
@@ -101,7 +111,7 @@ onMounted(() => {
                         {{ ticket.ticketNumber }}
                     </div>
                     <div class="service text-lg">
-                        {{ ticket.serviceName }}
+                        {{ formatService(ticket.serviceName) }}
                     </div>
                     <!-- <div class="date">
                         {{ formatDate(ticket.registrationTime) }}
@@ -113,7 +123,8 @@ onMounted(() => {
                             ticket.windowNum }}
                     </div>
                     <div class="change ">
-                        <button @click="show(ticket.id)" class="btn btn-primary text-sm"><i class="fas fa-info-circle"></i></button>
+                        <button @click="show(ticket.id)" class="btn btn-primary text-sm"><i
+                                class="fas fa-info-circle"></i></button>
                     </div>
                 </div>
 
@@ -252,9 +263,10 @@ main {
 @media (min-width: 480px) {
     .tickets {
         width: 100vw;
-        .ticket{
-            .ticketNum h1{
-            font-size: 24px;
+
+        .ticket {
+            .ticketNum h1 {
+                font-size: 24px;
             }
         }
     }

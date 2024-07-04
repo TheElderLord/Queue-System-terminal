@@ -102,7 +102,7 @@ const getBranchLocation = async () => {
 const getLang = () => {
     return langStore.getLang();
 }
-const getMobile =()=>{
+const getMobile = () => {
     return store.getMobile();
 }
 
@@ -158,16 +158,16 @@ const getUrlQuery = () => {
     }
 }
 
-const getBranchInfo = async()=>{
+const getBranchInfo = async () => {
     branchInfo.value = await fetchBranchById(branchId.value);
 }
 
-const formatService = (service:string)=>{
+const formatService = (service: string) => {
     const splitService = service.split(";");
-    let formatted; 
-    splitService.map(e=>{
-        if(e.includes(getLang()))
-        formatted= e.replace(`${getLang()}=`,"");
+    let formatted;
+    splitService.map(e => {
+        if (e.includes(getLang()))
+            formatted = e.replace(`${getLang()}=`, "");
     })
     return formatted;
 }
@@ -177,10 +177,10 @@ watch(
     () => services.value,
     (newValue) => {
         if (newValue.length === 0) {
-            setTimeout(()=>{
+            setTimeout(() => {
                 getSessionTickets();
-            },3000)
-           
+            }, 3000)
+
         }
     },
     { immediate: true }
@@ -204,7 +204,7 @@ const getBranchFromLocalStorage = () => {
     if (branch) {
         branchId.value = Number(branch);
     }
-    else{
+    else {
         isBranchSelected.value = false
     }
 }
@@ -230,9 +230,9 @@ onMounted(() => {
             <v-btn v-if="isChild" @click="getSessionTickets()" class=" absolute left-0">
                 <i class="fa-solid fa-arrow-left"></i>
             </v-btn>
-            <div  class="branchInfo text-center">
-                <h1 class="text-2xl font-bold">{{branchInfo.name}}</h1><br>
-                <h1 class="text-2xl font-bold">{{branchInfo.description}}</h1>
+            <div class="branchInfo text-center">
+                <h1 class="text-2xl font-bold">{{ branchInfo.name }}</h1><br>
+                <h1 class="text-2xl font-bold">{{ branchInfo.description }}</h1>
             </div>
             <div class="title text-2xl text-center m-4  sm:text-2xl">
                 {{ getLang() === "RUS" ? "Выберите услугу" : getLang() === "KAZ" ? "Қызметті таңдаңыз" : `Select a
@@ -240,7 +240,7 @@ onMounted(() => {
             </div>
             <div v-if="services.length > 0" class="services">
                 <div @click="registerT(service.id)" v-for="service in services" :key="service.id" class="service">
-                    {{ service.name }}
+                    {{ formatService(service.name) }}
                 </div>
             </div>
 
@@ -250,11 +250,11 @@ onMounted(() => {
                     қызметтер жоқ`: "No available services" }}</div>
                 <div v-if="getMobile() && !isBranchSelected" class="emptyText">{{ getLang() === "RUS" ? `Сканируйте QR
                     заново` : getLang() === "KAZ" ?
-                    `QR кодты қайтадан сканерлеңіз`: "Scan QR code again" }}</div>
+                    `QR кодты қайтадан сканерлеңіз` : "Scan QR code again" }}</div>
                 <div v-if="!getMobile() && !isBranchSelected" class="emptyText">{{ getLang() === "RUS" ? `Нужно выбрать
                     отделение` : getLang() === "KAZ" ?
-                    `Бөлімшені таңдаңыз`: "Need to select a branch" }}</div>
-               
+                    `Бөлімшені таңдаңыз` : "Need to select a branch" }}</div>
+
             </div>
 
 
