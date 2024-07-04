@@ -106,28 +106,25 @@ onMounted(() => {
                     tickets` }}</h1>
             </div>
             <div v-if="tickets" class="tickets ">
-                <div class="ticket  my-2 flex " v-for="ticket in tickets" :key="ticket.id">
+                <div class="ticket my-2 flex " v-for="ticket in tickets" :key="ticket.id">
                     <div class="ticketNum text-lg">
                         {{ ticket.ticketNumber }}
                     </div>
                     <div class="service text-lg">
                         {{ formatService(ticket.serviceName) }}
                     </div>
-                    <!-- <div class="date">
-                        {{ formatDate(ticket.registrationTime) }}
-                    </div> -->
                     <div class="status text-sm">
-                        {{ ticket.status === "NEW" ? "Вас скоро вызовут" : ticket.status === "COMPLETED" ? `Билет
-                        обслужен`:
-                            "Подойдите к окну: " +
-                            ticket.windowNum }}
+                        {{ ticket.status === "NEW" ? `${getLang() === "RUS" ? `В ожидании` : getLang() === "KAZ" ?
+                            "Күтіңіз" : "Waiting"}` : ticket.status === "COMPLETED" ? `${getLang() === "RUS" ? 'Обслужен' :
+                                getLang() === "KAZ" ? 'Билет обслужен' : "Completed"}` : `${getLang() === "RUS" ? `Подойдите к
+                        окну` : getLang() === "KAZ" ? 'Терезеге жақындаңыз' : 'Proceed to window'}: ${ticket.windowNum}`
+                        }}
                     </div>
                     <div class="change ">
                         <button @click="show(ticket.id)" class="btn btn-primary text-sm"><i
                                 class="fas fa-info-circle"></i></button>
                     </div>
                 </div>
-
             </div>
             <div class="text-3xl text-center" v-else>
                 {{ getLang() === "RUS" ? "Пусто" : getLang() === "KAZ" ? "Бос" : "Empty" }}
@@ -135,43 +132,55 @@ onMounted(() => {
             <div class="modal">
                 <v-dialog v-model="isCreateActive" max-width="500">
                     <template v-slot:activator="{ props: activatorProps }">
-                        <v-btn v-bind="activatorProps" color="surface-variant" text="Создать" variant="flat"></v-btn>
+                        <v-btn v-bind="activatorProps" color="surface-variant" text="Создать" variant="flat">
+                            {{ getLang() === "RUS" ? "Создать" : getLang() === "KAZ" ? "Жасау" : "Create" }}
+                        </v-btn>
                     </template>
-
                     <template v-slot:default>
-                        <v-card title="Информация">
+                        <v-card
+                            :title="getLang() === 'RUS' ? 'Информация' : getLang() === 'KAZ' ? 'Ақпарат' : 'Information'">
                             <v-card-text>
                                 <div class="card">
                                     <ul class="list-group list-group-flush">
                                         <li class="list-group-item text-3xl">
-                                            <h1>Номер билета:{{ TicketObject.ticketNumber }}</h1>
+                                            <h1>{{ getLang() === "RUS" ? 'Номер билета:' : getLang() === "KAZ" ? `Билет
+                                                нөмірі: ` : 'Ticket Number: ' }} {{ TicketObject.ticketNumber }}</h1>
                                         </li>
-                                        <li class="list-group-item">Время регистрации:{{
-                                            formatDate(TicketObject.registrationTime) }}</li>
-                                        <li class="list-group-item">Название услуги:{{ TicketObject.serviceName }}</li>
-                                        <li class="list-group-item">Отделение:{{ TicketObject.branchName }}</li>
-                                        <li class="list-group-item">Номер окна:{{ TicketObject.windowNum }}</li>
-                                        <li class="list-group-item">Ваша оценка:{{ TicketObject.rating === 0 ? `Вы еще
-                                            не поставили
-                                            оценку`: TicketObject.rating }}</li>
-                                        <li class="list-group-item">{{ TicketObject.status === "NEW" ?
-                                            "Ждет обслуживания" : "Обслужен" }} </li>
+                                        <li class="list-group-item">{{ getLang() === "RUS" ? 'Время регистрации:' :
+                                            getLang() === "KAZ" ? 'Тіркелу уақыты:' : 'Registration Time:' }} {{
+                                                formatDate(TicketObject.registrationTime) }}</li>
+                                        <li class="list-group-item">{{ getLang() === "RUS" ? 'Название услуги:' :
+                                            getLang() === "KAZ" ? 'Қызмет атауы:' : 'Service Name:' }} {{
+                                                formatService(TicketObject.serviceName) }}</li>
+                                        <li class="list-group-item">{{ getLang() === "RUS" ? 'Отделение:' : getLang()
+                                            === "KAZ" ? 'Бөлімше:' : 'Branch:' }} {{ TicketObject.branchName }}</li>
+                                        <li class="list-group-item">{{ getLang() === "RUS" ? 'Номер окна:' : getLang()
+                                            === "KAZ" ? 'Терезе нөмірі:' : 'Window Number:' }} {{ TicketObject.windowNum
+                                            }}</li>
+                                        <li class="list-group-item">{{ getLang() === "RUS" ? 'Ваша оценка:' : getLang()
+                                            === "KAZ" ? 'Сіздің бағаңыз:' : 'Your Rating:' }} {{ TicketObject.rating ===
+                                                0 ? getLang() === "RUS" ? 'Не поставили оценку' : getLang() === "KAZ"
+                                                    ? 'Баға қоймадыңыз' : 'Not rated yet' :
+                                                TicketObject.rating }}</li>
+                                        <li class="list-group-item">{{ TicketObject.status === "NEW" ? (getLang() ===
+                                            "RUS" ? "Ждет обслуживания" : getLang() === "KAZ" ? `Қызмет көрсетуді күтіп
+                                            тұр` : "Waiting for service") : (getLang() === "RUS" ? "Обслужен" :
+                                            getLang() === "KAZ" ? "Қызмет көрсетілді" : "Served") }}</li>
                                         <li v-if="TicketObject.status === 'COMPLETED' && TicketObject.rating === 0">
                                             <div class="stars flex w-fit mx-auto">
-
-                                                <div :class="{ 'text-red-500': ratingObject.rating === 1 || ratingObject.rating === 2 || ratingObject.rating === 3 || ratingObject.rating === 4 || ratingObject.rating === 5 }"
+                                                <div :class="{ 'text-red-500': ratingObject.rating >= 1 }"
                                                     @click="starClick(1)" class="star">
                                                     <i class="fas fa-star"></i>
                                                 </div>
-                                                <div :class="{ 'text-red-500': ratingObject.rating === 2 || ratingObject.rating === 3 || ratingObject.rating === 4 || ratingObject.rating === 5 }"
+                                                <div :class="{ 'text-red-500': ratingObject.rating >= 2 }"
                                                     @click="starClick(2)" class="star">
                                                     <i class="fas fa-star"></i>
                                                 </div>
-                                                <div :class="{ 'text-red-500': ratingObject.rating === 3 || (ratingObject.rating === 4 || ratingObject.rating === 5) }"
+                                                <div :class="{ 'text-red-500': ratingObject.rating >= 3 }"
                                                     @click="starClick(3)" class="star">
                                                     <i class="fas fa-star"></i>
                                                 </div>
-                                                <div :class="{ 'text-red-500': ratingObject.rating === 4 || ratingObject.rating === 5 }"
+                                                <div :class="{ 'text-red-500': ratingObject.rating >= 4 }"
                                                     @click="starClick(4)" class="star">
                                                     <i class="fas fa-star"></i>
                                                 </div>
@@ -179,31 +188,31 @@ onMounted(() => {
                                                     @click="starClick(5)" class="star">
                                                     <i class="fas fa-star"></i>
                                                 </div>
-
                                             </div>
-
-
                                         </li>
                                         <li v-if="TicketObject.status === 'COMPLETED' && TicketObject.rating === 0"
                                             class="list-group-item">
-                                            <input class="w-full p-2 border" type="text" v-model="comment">
+                                            <input class="w-full p-2 border" type="text" v-model="comment"
+                                                :placeholder="getLang() === 'RUS' ? 'Ваш комментарий' : getLang() === 'KAZ' ? 'Сіздің пікіріңіз' : 'Your comment'">
                                         </li>
                                         <li v-if="TicketObject.status === 'COMPLETED' && TicketObject.rating !== 0"
                                             class="list-group-item">
-                                            Комментарии:{{ TicketObject.comment }}
+                                            {{ getLang() === "RUS" ? 'Комментарии:' : getLang() === "KAZ" ? 'Пікірлер:'
+                                                : 'Comments:' }} {{ TicketObject.comment }}
                                         </li>
-                                        <li><v-btn class="mt-5" @click="rate(TicketObject.id)" text="Оценить"></v-btn>
-                                        </li>
+                                        <li><v-btn class="mt-5" @click="rate(TicketObject.id)" text="Оценить">{{
+                                            getLang() === "RUS" ? 'Оценить' : getLang() === "KAZ" ? 'Бағалау' :
+                                                'Rate' }}</v-btn></li>
                                     </ul>
                                 </div>
-
                             </v-card-text>
-
                             <v-card-actions>
                                 <v-spacer></v-spacer>
                                 <v-btn v-if="TicketObject.status === 'NEW'" @click="deleteTicket(TicketObject.id)"
-                                    text="Отказаться от билета"></v-btn>
-                                <v-btn text="Закрыть" @click="close()"></v-btn>
+                                    text="Отказаться от билета">{{ getLang() === "RUS" ? 'Отказаться от билета' :
+                                        getLang() === "KAZ" ? 'Билетті қайтару' : 'Cancel Ticket' }}</v-btn>
+                                <v-btn text="Закрыть" @click="close()">{{ getLang() === "RUS" ? 'Закрыть' : getLang()
+                                    === "KAZ" ? 'Жабу' : 'Close' }}</v-btn>
                             </v-card-actions>
                         </v-card>
                     </template>
@@ -211,9 +220,8 @@ onMounted(() => {
             </div>
         </div>
     </main>
-
-
 </template>
+
 <style lang="scss" scoped>
 main {
     width: 100%;
