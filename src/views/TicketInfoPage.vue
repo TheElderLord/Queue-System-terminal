@@ -59,7 +59,7 @@ const formatService = (service: string) => {
 
 
 const getLang = () => {
-    return lang.getLang()
+    return langStore.getLang()
 }
 onMounted(() => {
     registerT();

@@ -163,13 +163,18 @@ const getBranchInfo = async () => {
 }
 
 const formatService = (service: string) => {
-    const splitService = service.split(";");
-    let formatted;
-    splitService.map(e => {
-        if (e.includes(getLang()))
-            formatted = e.replace(`${getLang()}=`, "");
-    })
-    return formatted;
+    try {
+        const splitService = service.split(";");
+        let formatted;
+        splitService.map(e => {
+            if (e.includes(getLang()))
+                formatted = e.replace(`${getLang()}=`, "");
+        })
+        return formatted;
+    } catch (err) {
+        return service;
+    }
+
 }
 
 
