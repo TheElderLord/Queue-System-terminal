@@ -21,6 +21,7 @@ const incompleteTicketErrorMessage = ref("");
 
 const registerT = async () => {
     const info: TicketInfo = store.getInfo();
+    console.log(info)
     try {
         ticket.value = await registerTicket(info);
 
@@ -48,13 +49,20 @@ const formatDate = (date: Date) => {
 }
 
 const formatService = (service: string) => {
-    const splitService = service.split(";");
-    let formatted;
-    splitService.map(e => {
-        if (e.includes(getLang()))
-            formatted = e.replace(`${getLang()}=`, "");
-    })
-    return formatted;
+    console.log(service)
+    try {
+        const splitService = service.split(";");
+        let formatted;
+        splitService.map(e => {
+            if (e.includes(getLang()))
+                formatted = e.replace(`${getLang()}=`, "");
+        })
+        return formatted;
+    }catch(err){
+        return service;
+    }
+    
+   
 }
 
 
