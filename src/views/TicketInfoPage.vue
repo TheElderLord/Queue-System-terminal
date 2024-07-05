@@ -80,7 +80,7 @@ onMounted(() => {
                 <h1>{{ ticket.ticketNumber }}</h1>
             </div>
             <div class="serviceName text-3xl">
-                <h1>{{ ticket.serviceName }}</h1>
+                <h1>{{ formatService(ticket.serviceName) }}</h1>
             </div>
             <div class="date text-3xl">
                 <h1>{{ formatDate(ticket.registrationTime) }}</h1>
