@@ -28,7 +28,7 @@ onMounted(() => {
     getQueueTickets();
     setInterval(() => {
         getQueueTickets();
-    }, 3000)
+    }, 10000)
 })
 </script>
 <template>
