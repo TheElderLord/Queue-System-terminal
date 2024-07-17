@@ -10,7 +10,7 @@ import type { TicketRating } from "@/models/ticketRating.interface";
 
 // const branch = localStorage.getItem("branch");
 
-export const fetchAvailableServices = async (serviceId: number,branch:number): Promise<Service[]> => {
+export const fetchAvailableServices = async (serviceId: number, branch: number): Promise<Service[]> => {
 
     try {
         const url = serviceId ? `${TICKETS_URL}/${branch}?serviceId=${serviceId}` : `${TICKETS_URL}/${branch}`
@@ -27,6 +27,7 @@ export const registerTicket = async (info: TicketInfo): Promise<Ticket> => {
         const response: AxiosResponse<Ticket> = await axios.post<Ticket>(REGISTER_TICKET_URL
             , info
         );
+        console.log(response.data)
         return response.data;
     } catch (error) {
         console.error("Error fetching tickets:", error);
@@ -34,7 +35,7 @@ export const registerTicket = async (info: TicketInfo): Promise<Ticket> => {
     }
 }
 
-export const fetchUserTickets = async (token:string): Promise<Ticket[]> => {
+export const fetchUserTickets = async (token: string): Promise<Ticket[]> => {
     try {
         // const token = Cookies.get('token');
         const response: AxiosResponse<Ticket[]> = await axios.get<Ticket[]>(`${USER_TICKETS_URL}/${token
@@ -45,9 +46,9 @@ export const fetchUserTickets = async (token:string): Promise<Ticket[]> => {
         throw error; // Re-throw the error to handle it elsewhere if needed
     }
 }
-export const fetchQueueTickets = async (branch:number): Promise<Ticket[]> => {
+export const fetchQueueTickets = async (branch: number): Promise<Ticket[]> => {
     try {
-        
+
         const response: AxiosResponse<Ticket[]> = await axios.get<Ticket[]>(`${QUEUE_URL}?branchId=${branch}`);
         console.log(response.data)
         return response.data;

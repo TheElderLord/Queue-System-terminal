@@ -58,11 +58,11 @@ const formatService = (service: string) => {
                 formatted = e.replace(`${getLang()}=`, "");
         })
         return formatted;
-    }catch(err){
+    } catch (err) {
         return service;
     }
-    
-   
+
+
 }
 
 
