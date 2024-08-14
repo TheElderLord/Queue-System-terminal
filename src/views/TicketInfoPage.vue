@@ -82,7 +82,7 @@ onMounted(() => {
             <div class="serviceName text-3xl">
                 <h1>{{ formatService(ticket.serviceName) }}</h1>
             </div>
-            <div class="date text-3xl">
+            <div v-if="ticket.registrationTime" class="date text-3xl">
                 <h1>{{ formatDate(ticket.registrationTime) }}</h1>
             </div>
             <div class="serviceName text-3xl">
