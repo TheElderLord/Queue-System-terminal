@@ -2,7 +2,7 @@
 import type { Ticket } from '../models/ticket.interface';
 import { fetchQueueTickets } from '../utils/tickets.utils';
 import { onMounted, ref } from 'vue';
-import { useLangStore } from '@/stores/ticket';
+import { useLangStore } from '../stores/ticket';
 
 const langStore = useLangStore();
 const tickets = ref([] as Ticket[]);
@@ -14,9 +14,9 @@ const getQueueTickets = async () => {
     tickets.value = await fetchQueueTickets(branchId.value);
     // tickets.value.push(newTickets.value[newTickets.value.length - 1]);
 }
-const getBranchFromLocalStorage=()=>{
+const getBranchFromLocalStorage = () => {
     const branch = localStorage.getItem("branch");
-    if(branch){
+    if (branch) {
         branchId.value = Number(branch);
     }
 }

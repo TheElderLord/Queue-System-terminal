@@ -10,7 +10,7 @@ import type { TicketRating } from "@/models/ticketRating.interface";
 
 // const branch = localStorage.getItem("branch");
 
-export const fetchAvailableServices = async (serviceId: number, branch: number): Promise<Service[]> => {
+export const fetchAvailableServices = async (serviceId: number | null, branch: number): Promise<Service[]> => {
 
     try {
         const url = serviceId ? `${TICKETS_URL}/${branch}?serviceId=${serviceId}` : `${TICKETS_URL}/${branch}`

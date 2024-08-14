@@ -10,9 +10,9 @@ import { useStore, useLangStore } from "../stores/ticket";
 import { useRoute, useRouter } from "vue-router";
 import { v4 as uuidv4 } from 'uuid';
 import Cookies from 'js-cookie';
-import type { BranchLocation } from "@/models/branch/branchLocation";
-import { fetchBranchById, fetchBranchLocation } from "@/utils/branches.utils";
-import type { Branch } from "@/models/branch/branch.interface";
+import type { BranchLocation } from "../models/branch/branchLocation";
+import { fetchBranchById, fetchBranchLocation } from "../utils/branches.utils";
+import type { Branch } from "../models/branch/branch.interface";
 
 
 const store = useStore();
@@ -102,7 +102,7 @@ const getBranchLocation = async () => {
 const getLang = () => {
     return langStore.getLang();
 }
-const getMobile = () => {
+const getMobile = (): boolean => {
     return store.getMobile();
 }
 
@@ -181,7 +181,7 @@ const formatService = (service: string) => {
 watch(
     () => services.value,
     (newValue) => {
-        if (newValue.length === 0) {
+        if (services.value.length === 0) {
             setTimeout(() => {
                 getSessionTickets();
             }, 3000)

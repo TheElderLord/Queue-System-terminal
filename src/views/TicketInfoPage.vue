@@ -1,3 +1,28 @@
+<template>
+    <main>
+        <div v-if="loading" class="spinner-container">
+            <div class="spinner"></div>
+        </div>
+        <div v-else-if="!incompleteTicketError && ticket" class="ticket-container">
+            <div class="ticketNumber text-4xl">
+                <h1>{{ ticket.ticketNumber }}</h1>
+            </div>
+            <div class="serviceName text-3xl">
+                <h1>{{ formatService(ticket.serviceName) }}</h1>
+            </div>
+            <div v-if="ticket.registrationTime" class="date text-3xl">
+                <h1>{{ formatDate(ticket.registrationTime) }}</h1>
+            </div>
+            <div class="serviceName text-3xl">
+                <h1>{{ ticket.windowNum }}</h1>
+            </div>
+        </div>
+        <div v-if="incompleteTicketError" class="error-message text-center text-5xl">
+            <h2>{{ incompleteTicketErrorMessage }}</h2>
+        </div>
+    </main>
+</template>
+
 <script setup lang="ts">
 
 import { useStore, useLangStore } from '../stores/ticket'
@@ -14,6 +39,7 @@ const langStore = useLangStore();
 const router = useRouter()
 
 const ticket = ref({} as Ticket);
+const loading = ref(true);  // New loading state
 
 const incompleteTicketError = ref(false);
 const incompleteTicketErrorMessage = ref("");
@@ -24,7 +50,6 @@ const registerT = async () => {
     console.log(info)
     try {
         ticket.value = await registerTicket(info);
-
     } catch (error) {
         incompleteTicketError.value = true;
         if (axios.isAxiosError(error)) {
@@ -39,6 +64,8 @@ const registerT = async () => {
         } else {
             incompleteTicketErrorMessage.value = "Unexpected error: " + error;
         }
+    } finally {
+        loading.value = false;  // Set loading to false once the request is completed
     }
     setTimeout(() => {
         router.push("/")
@@ -61,10 +88,7 @@ const formatService = (service: string) => {
     } catch (err) {
         return service;
     }
-
-
 }
-
 
 const getLang = () => {
     return langStore.getLang()
@@ -73,27 +97,7 @@ onMounted(() => {
     registerT();
 })
 </script>
-<template>
-    <main>
-        <div v-if="!incompleteTicketError && ticket" class="ticket-container">
-            <div class="ticketNumber text-4xl">
-                <h1>{{ ticket.ticketNumber }}</h1>
-            </div>
-            <div class="serviceName text-3xl">
-                <h1>{{ formatService(ticket.serviceName) }}</h1>
-            </div>
-            <div v-if="ticket.registrationTime" class="date text-3xl">
-                <h1>{{ formatDate(ticket.registrationTime) }}</h1>
-            </div>
-            <div class="serviceName text-3xl">
-                <h1>{{ ticket.windowNum }}</h1>
-            </div>
-        </div>
-        <div v-if="incompleteTicketError" class="error-message text-center text-5xl">
-            <h2>{{ incompleteTicketErrorMessage }}</h2>
-        </div>
-    </main>
-</template>
+
 <style lang="scss" scoped>
 main {
     display: flex;
@@ -101,6 +105,33 @@ main {
     align-items: center;
     width: 100%;
     height: 100vh;
+
+    .spinner-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100vh;
+    }
+
+    .spinner {
+        border: 16px solid #f3f3f3;
+        border-top: 16px solid #3498db;
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 
     .ticket-container {
         text-align: center;
