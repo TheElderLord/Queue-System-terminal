@@ -67,10 +67,11 @@ onMounted(() => {
 
 .tickets {
     width: 100%;
-    height: 100%;
+    height: 90%;
+    overflow-y: scroll;
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
+
 }
 
 .ticket {
