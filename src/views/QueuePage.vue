@@ -67,7 +67,7 @@ onMounted(() => {
 
 .tickets {
     width: 100%;
-    height: 70%;
+    height: 75%;
     overflow-y: scroll;
     display: flex;
     flex-direction: column;
