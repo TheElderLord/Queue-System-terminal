@@ -144,8 +144,8 @@ const registerT = async (serviceId: number) => {
 }
 
 const goToAdmin = () => {
-    if (username.value === "admin" && password.value === "admin")
-        router.push("/admin");
+    // if (username.value === "admin" && password.value === "admin")
+    router.push("/admin");
 }
 const getUrlQuery = () => {
     if (store.getMobile() === true) {
@@ -164,14 +164,18 @@ const getBranchInfo = async () => {
 
 const formatService = (service: string) => {
     try {
+        if (!service.includes(";")) {
+            return service;
+        }
         const splitService = service.split(";");
         let formatted;
         splitService.map(e => {
             if (e.includes(getLang()))
                 formatted = e.replace(`${getLang()}=`, "");
-        })
+        });
         return formatted;
     } catch (err) {
+        console.log(err);
         return service;
     }
 
@@ -230,14 +234,14 @@ onMounted(() => {
 
         <div class="ticket-container w-full h-full">
             <div v-if="!getMobile()" class="settings float-end absolute right-0">
-                <v-btn @click="adminRedirect = !adminRedirect"><i class="fas fa-tools"></i></v-btn>
+                <v-btn @click="goToAdmin()"><i class="fas fa-tools"></i></v-btn>
             </div>
             <v-btn v-if="isChild" @click="getSessionTickets()" class=" absolute left-0">
                 <i class="fa-solid fa-arrow-left"></i>
             </v-btn>
             <div class="branchInfo text-center">
-                <h1 class="text-2xl font-bold">{{ branchInfo.name }}</h1><br>
-                <h1 class="text-2xl font-bold">{{ branchInfo.description }}</h1>
+                <h1 class="text-2xl font-bold">{{ formatService(branchInfo.name) }}</h1><br>
+                <h1 class="text-2xl font-bold">{{ formatService(branchInfo.description) }}</h1>
             </div>
             <div class="title text-2xl text-center m-4  sm:text-2xl">
                 {{ getLang() === "RUS" ? "Выберите услугу" : getLang() === "KAZ" ? "Қызметті таңдаңыз" : `Select a
